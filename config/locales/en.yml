@@ -1,0 +1,69 @@
+en:
+  decidim:
+    roles:
+      amendment_author:
+        description: People who have authored an amendment. Permissions under this role are related to those specific amendments.
+        name: Amendment author
+      assembly_admin:
+        description: People who are assigned to manage a specific assembly and access the administration section of that assembly. Permissions under this role are related to those assemblies.
+        name: Assembly administrator
+      assembly_member:
+        description: People who are members of an assembly. In private assemblies, only these people can see the resources within the assemblies they have this role in and participate. Permissions under this role are related to those assemblies.
+        name: Assembly member
+      authorization_owner:
+        description: People who are authorized with one of the authorization options and can perform actions against the authorizations they have this role in. Permissions under this role are related to those specific authorizations.
+        name: Authorization owner
+      collaborative_draft_author:
+        description: People who have authored a collaborative draft. Permissions under this role are related to those specific collaborative drafts.
+        name: Collaborative draft author
+      comment_author:
+        description: People who have authored a comment. Permissions under this role are related to those specific comments.
+        name: Comment author
+      conversation_author:
+        description: People who have started (i.e. authored) a conversation. Permissions under this role are related to those specific conversations.
+        name: Conversation author
+      conversation_participant:
+        description: People who are a participant in a conversation. Permissions under this role are related to those specific conversations.
+        name: Conversation participant
+      debate_author:
+        description: People who have authored a debate. Permissions under this role are role related to those specific debates.
+        name: Debate author
+      form_answer_author:
+        description: People who have answered a form or a survey. Permissions under this role are related to those specific forms or surveys.
+        name: Form answer author
+      group_admin:
+        description: People who are administrators in a participant group. Permissions under this role are related to those groups.
+        name: Group administrator
+      group_member:
+        description: People who are members in a participant group. Permissions under this role are related to those groups.
+        name: Group member
+      meeting_author:
+        description: People who have authored a meeting. Permissions under this role are related to those specific meetings.
+        name: Meeting author
+      meeting_participant:
+        description: People who have signed up or registered for an event. Permissions under this role are related to those specific meetings.
+        name: Meeting participant
+      notification_owner:
+        description: People who have been notified through the system about something and are owners of these individual notifications. Permissions under this role are related to those specific notifications.
+        name: Notification owner
+      organization_admin:
+        description: People who can access the administration panel and manage the resources within the organization.
+        name: Organization administrator
+      participant:
+        description: People who have an account on the platform and perform participation activities on the service.
+        name: Participant
+      process_admin:
+        description: People who are assigned to manage a specific process and access the administration section of that process. Permissions under this role are related to those processes.
+        name: Process administrator
+      process_member:
+        description: People who are members of a process. In private processes, only these people can see the resources within the processes they have this role in and participate. Permissions under this role are related to those processes.
+        name: Process member
+      proposal_author:
+        description: People who have authored an proposal. Permissions under this role are related to those specific proposals.
+        name: Proposal author
+      proposal_evaluator:
+        description: People who can evaluate proposals in a given component and access the administrative tools to perform these tasks. Permissions under this group are specific to a participatory space where these components exist.
+        name: Proposal evaluator
+      visitor:
+        description: People who visit the site as guests and are not logged in to the platform. Note this role is also applied to everyone else.
+        name: Visitor
