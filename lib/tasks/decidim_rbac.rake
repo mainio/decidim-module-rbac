@@ -38,7 +38,7 @@ namespace :decidim_rbac do
         puts role.description
         puts ""
 
-        rows = [["Permission", "Operations"]] + role.permissions.keys.sort.map do |key|
+        rows = [%w(Permission Operations)] + role.permissions.keys.sort.map do |key|
           operations = role.permissions[key]
           ["`:#{key}`", operations.sort.map { |op| "`:#{op}`" }.join("<br>")]
         end
@@ -58,7 +58,7 @@ namespace :decidim_rbac do
           end
 
           puts rowtext
-          puts "| #{row_lengths.map { |l| "-" * l }.join(" | ")} |" if rowi == 0
+          puts "| #{row_lengths.map { |l| "-" * l }.join(" | ")} |" if rowi.zero?
         end
         puts ""
       end
@@ -102,6 +102,7 @@ namespace :decidim_rbac do
       end
     end
 
+    # rubocop:disable Lint/EmptyConditionalBody
     if Decidim.module_installed?(:assemblies)
 
     end
@@ -109,6 +110,7 @@ namespace :decidim_rbac do
     if Decidim.module_installed?(:conferences)
 
     end
+    # rubocop:enable Lint/EmptyConditionalBody
 
     # TODO: Add organization
     # TODO: Add participatory space admins

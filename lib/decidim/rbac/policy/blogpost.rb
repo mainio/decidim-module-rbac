@@ -6,10 +6,9 @@ module Decidim
       class Blogpost < Default
         context_reader :current_component, :component_settings
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def able?(operation)
           case operation
-          when :admin_read, :admin_create, :admin_manage_trash
-            true
           when :admin_update, :admin_destroy
             admin_can_manage?
           when :admin_soft_delete
@@ -35,9 +34,11 @@ module Decidim
 
             record.author == subject
           else
+            # :admin_read, :admin_create, :admin_manage_trash
             true
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 
@@ -49,7 +50,7 @@ module Decidim
         end
 
         def admin_can_manage?
-          return false unless record.present?
+          return false if record.blank?
           return false unless record.author
 
           case record.author

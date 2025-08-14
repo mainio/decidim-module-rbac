@@ -56,9 +56,8 @@ module Decidim
             return false unless record.respond_to?(:deleted?)
 
             record.deleted?
-          when :admin_manage_trash
-            true
           else
+            # :admin_manage_trash
             true
           end
         end

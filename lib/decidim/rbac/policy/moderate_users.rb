@@ -8,6 +8,7 @@ module Decidim
           return false unless record
           return false unless subject
 
+          case operation
           when :admin_destroy, :admin_block
             record != subject
           when :admin_read, :admin_unreport

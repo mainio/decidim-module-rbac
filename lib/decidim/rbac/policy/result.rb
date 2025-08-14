@@ -6,7 +6,7 @@ module Decidim
       class Result < Default
         def able?(operation)
           case operation
-          when :admin_create
+          when :admin_create, :admin_manage_trash
             true
           when :admin_update
             record.present?
@@ -20,8 +20,6 @@ module Decidim
             return false unless record.respond_to?(:deleted?)
 
             record.deleted?
-          when :admin_manage_trash
-            true
           else
             false
           end

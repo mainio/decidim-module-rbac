@@ -55,8 +55,8 @@ module Decidim
         raise Decidim::ActionForbidden unless allowed_to?(operation, permission, extra_context)
       end
 
-      # rubocop:disable Metrics/ParameterLists
-      def allowed_to?(operation, resource, extra_context = {}, chain = permission_class_chain, subject = current_user, scope = nil)
+      # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      def allowed_to?(operation, resource, extra_context = {}, _chain = permission_class_chain, subject = current_user, scope = nil)
         # These are just a way to try to make it work with all the cases that
         # use this method. Ideally, those parts that are not compatible with the
         # API should be rewritten in the future.
@@ -75,14 +75,14 @@ module Decidim
         # Ideally in the permission checks, we should already check against the
         # admin operations instead of providing the separate scope.
         if scope == :admin
-          policy.apply("admin_#{operation}".to_sym)
+          policy.apply(:"admin_#{operation}")
         else
           policy.apply(operation.to_sym)
         end
       rescue Decidim::PermissionAction::PermissionNotSetError
         false
       end
-      # rubocop:enable Metrics/ParameterLists
+      # rubocop:enable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       def admin_allowed_to?(operation, resource, extra_context = {}, chain = permission_class_chain, subject = current_user)
         allowed_to?(operation, resource, extra_context, chain, subject, :admin)

@@ -6,6 +6,7 @@ module Decidim
       class Meeting < Default
         context_reader :component_settings, :current_component
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def able?(operation)
           return admin_able?(operation) if operation.start_with?("admin_")
 
@@ -42,6 +43,7 @@ module Decidim
             record.present? && record.poll.present?
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def admin_able?(operation)
           case operation

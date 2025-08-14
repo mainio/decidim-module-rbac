@@ -44,46 +44,42 @@ module Decidim
       # => Repeat the operations defined for this permissions for all permissions
       #    keys defined in a method named `def permission_resource`.
       def scan_code
-        {}.tap do |permissions|
-          decidim_gems.each do |spec|
-            current = {}
-            Dir.glob("#{spec.full_gem_path}/{app,lib}/**/*.{rb,erb}").each do |file|
-              content = File.read(file)
+        decidim_gems.each do |spec|
+          current = {}
+          Dir.glob("#{spec.full_gem_path}/{app,lib}/**/*.{rb,erb}").each do |file|
+            content = File.read(file)
 
-              if File.extname(file) == ".erb"
-                content.scan(/<%.*(allowed_to\?[( ]\s*(.*)\)?)\s+%>/).each do |match|
-                  args = parse_args(match[1])
-                  add_permissions(current, args)
-                end
-              else
-                content.scan(/  (enforce_permission_to[( ]\s*(.*)\)?)/).each do |match|
-                  args = parse_args(match[1])
-                  add_permissions(current, args)
-                end
-                content.scan(/  (allowed_to\?[( ]\s*(.*)\)?)/).each do |match|
-                  args = parse_args(match[1])
-                  add_permissions(current, args)
-                end
+            if File.extname(file) == ".erb"
+              content.scan(/<%.*(allowed_to\?[( ]\s*(.*)\)?)\s+%>/).each do |match|
+                args = parse_args(match[1])
+                add_permissions(current, args)
+              end
+            else
+              content.scan(/  (enforce_permission_to[( ]\s*(.*)\)?)/).each do |match|
+                args = parse_args(match[1])
+                add_permissions(current, args)
+              end
+              content.scan(/  (allowed_to\?[( ]\s*(.*)\)?)/).each do |match|
+                args = parse_args(match[1])
+                add_permissions(current, args)
               end
             end
-            yield spec.name, current unless current.empty?
           end
+          yield spec.name, current unless current.empty?
         end
       end
 
       private
 
       def permission_definitions(key)
-        {}.tap do |roles|
-          decidim_gems.each do |spec|
-            filepath = "#{spec.full_gem_path}/config/permissions.yml"
-            next unless File.exist?(filepath)
+        decidim_gems.each do |spec|
+          filepath = "#{spec.full_gem_path}/config/permissions.yml"
+          next unless File.exist?(filepath)
 
-            defs = YAML.load_file(filepath)
-            next unless defs[key].is_a?(Hash)
+          defs = YAML.load_file(filepath)
+          next unless defs[key].is_a?(Hash)
 
-            yield defs[key]
-          end
+          yield defs[key]
         end
       end
 

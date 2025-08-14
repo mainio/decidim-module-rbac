@@ -13,7 +13,7 @@ module Decidim
             budget.present? && workflow.vote_allowed?(budget)
           when :export_pdf
             return false unless subject
-            return false unless record.present?
+            return false if record.blank?
 
             record.user == subject
           when :admin_remind

@@ -18,8 +18,8 @@ module Decidim
       Decidim::RBAC::Registry.instance
     end
 
-    def self.define(&block)
-      registry.register(&block)
+    def self.define(&)
+      registry.register(&)
     end
 
     def self.policy(key)

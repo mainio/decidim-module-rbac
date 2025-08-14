@@ -5,6 +5,7 @@ module Decidim
     class Engine < ::Rails::Engine
       isolate_namespace Decidim::RBAC
 
+      # rubocop:disable Lint/UselessAssignment
       initializer "decidim_rbac.events" do
         ActiveSupport::Notifications.subscribe("decidim.proposals.create_proposal:after") do |_event_name, data|
           proposal = data[:resource]
@@ -20,6 +21,7 @@ module Decidim
           # TODO: Assign the coauthor role
         end
       end
+      # rubocop:enable Lint/UselessAssignment
 
       initializer "decidim_rbac.customizations" do
         config.to_prepare do

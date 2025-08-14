@@ -1,4 +1,4 @@
-# frozen_strign_literal: true
+# frozen_string_literal: true
 
 class CreateRbacTables < ActiveRecord::Migration[6.1]
   def change

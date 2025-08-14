@@ -4,6 +4,7 @@ module Decidim
   module RBAC
     module Policy
       class Authorization < Default
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def able?(operation)
           return false if subject.blank?
 
@@ -26,6 +27,7 @@ module Decidim
             false
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 

@@ -10,14 +10,13 @@ module Decidim
           return false unless subject
 
           case operation
-          when :admin_show_email
-            true
           when :read, :show, :export, :download, :update, :update_profile, :delete
             return false unless current_user
             return false unless subject
 
             current_user == subject
           else
+            # :admin_show_email
             true
           end
         end

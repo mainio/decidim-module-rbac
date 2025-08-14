@@ -43,7 +43,7 @@ module Decidim
         end
 
         def user_can_preview_space?
-          return false unless share_token.present?
+          return false if share_token.blank?
 
           Decidim::ShareToken.use!(token_for: record, token: share_token, user: subject)
         rescue ActiveRecord::RecordNotFound, StandardError

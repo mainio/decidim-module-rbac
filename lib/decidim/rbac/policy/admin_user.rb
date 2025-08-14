@@ -9,6 +9,7 @@ module Decidim
         def able?(operation)
           return false unless subject
 
+          case operation
           when :admin_read, :admin_create, :admin_block
             # Note that the block action should also check that the blocked user
             # is not the subject (i.e. the current user). But the permission

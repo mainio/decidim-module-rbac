@@ -23,24 +23,24 @@ module Decidim
         end
       end
 
-      def group(key, &block)
+      def group(key, &)
         key = key.to_sym
         return @groups[key] unless block_given?
 
         roledef = Definition::Group.new
-        roledef.instance_eval(&block)
+        roledef.instance_eval(&)
         @groups[key].deep_merge!(roledef.resources)
         @groups[key]
       end
 
-      def role(key, &block)
+      def role(key, &)
         key = key.to_sym
         return @roles[key] unless block_given?
 
         @roles[key] ||= RBAC::Role.new(key.to_sym)
 
         roledef = Definition::Role.new
-        roledef.instance_eval(&block)
+        roledef.instance_eval(&)
         @roles[key].add_permissions(roledef.resources)
         @roles[key]
       end
@@ -75,9 +75,9 @@ module Decidim
             @resources = {}
           end
 
-          def resource(name, &block)
+          def resource(name, &)
             resdef = Definition::Resource.new
-            resdef.instance_eval(&block)
+            resdef.instance_eval(&)
 
             resources.deep_merge!(name.to_sym => resdef.operations)
           end
@@ -97,9 +97,9 @@ module Decidim
             resources.deep_merge!(groupdef)
           end
 
-          def resource(name, &block)
+          def resource(name, &)
             resdef = Definition::Resource.new
-            resdef.instance_eval(&block)
+            resdef.instance_eval(&)
 
             resources.deep_merge!(name.to_sym => resdef.operations)
           end

@@ -18,11 +18,10 @@ module Decidim
             Decidim::ImpersonationLog.active.where(admin: subject).empty?
           when :admin_impersonate
             return false if target_user.blank?
-            # TODO:
-            # We should check that the user does not have admin panel access.
-            # But this is not the correct way to do it since participants could
-            # have multiple participant roles. Instead, we should check if they
-            # have access to the admin panel.
+            # TODO: We should check that the user does not have admin panel
+            # access. But this is not the correct way to do it since
+            # participants could have multiple participant roles. Instead, we
+            # should check if they have access to the admin panel.
             # return false if target_user.permission_role_assignments.roles != ["participant"]
             return false if organization.available_authorization_handlers.empty?
 

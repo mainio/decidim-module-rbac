@@ -10,9 +10,7 @@ module Decidim
           return false unless subject
 
           case operation
-          when :admin_read, :admin_promote
-            true
-          when :impersonate
+          when :admin_read, :admin_promote, :impersonate
             true
           else
             false

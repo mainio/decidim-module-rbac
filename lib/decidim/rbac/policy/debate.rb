@@ -6,6 +6,7 @@ module Decidim
       class Debate < Default
         context_reader :current_settings, :component
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def able?(operation)
           case operation
           when :create
@@ -19,9 +20,7 @@ module Decidim
             !record.closed?
           when :close
             record&.closeable_by?(subject)
-          when :report, :export
-            true
-          when :admin_create, :admin_read, :admin_export
+          when :report, :export, :admin_create, :admin_read, :admin_export
             true
           when :admin_update
             record && !record.closed? && record.official?
@@ -31,6 +30,7 @@ module Decidim
             false
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       end
     end
   end

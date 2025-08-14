@@ -772,7 +772,6 @@ Decidim::RBAC.define do |reg|
     end
   end
 
-
   ##############################################################################
   ################################ ROLES BELOW #################################
   ##############################################################################
@@ -836,7 +835,6 @@ Decidim::RBAC.define do |reg|
     role.apply :surveys_admin
     role.apply :templates_admin
   end
-
 
   reg.role :user_manager do |role|
     # decidim-admin

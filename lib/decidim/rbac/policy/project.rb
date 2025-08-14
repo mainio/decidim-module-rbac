@@ -7,6 +7,7 @@ module Decidim
       class Project < Default
         context_reader :workflow, :budget
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def able?(operation)
           case operation
           when :admin_create, :admin_manage_trash
@@ -30,6 +31,7 @@ module Decidim
             false
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
       end
     end
   end

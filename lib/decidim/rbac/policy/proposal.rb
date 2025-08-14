@@ -6,9 +6,10 @@ module Decidim
       class Proposal < Default
         context_reader :current_settings, :component, :component_settings
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def able?(operation)
           case operation
-          when :read, :admin_read
+          when :read, :admin_read, :report
             true
           when :create
             # TODO: Authorization check
@@ -36,12 +37,11 @@ module Decidim
           when :unvote
             # TODO: Authorization check
             record && voting_enabled?
-          when :report
-            true
           else
             false
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def allowed?(operation)
           case operation

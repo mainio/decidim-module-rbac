@@ -10,13 +10,9 @@ module Decidim
           return false if record && !record.is_a?(Decidim::Assembly)
 
           case operation
-          when :list
+          when :list, :admin_read, :admin_create, :admin_import
             true
-          when :read
-            record.present?
-          when :admin_read, :admin_create, :admin_import
-            true
-          when :admin_update, :admin_publish, :admin_export, :admin_copy, :admin_preview
+          when :read, :admin_update, :admin_publish, :admin_export, :admin_copy, :admin_preview
             record.present?
           when :admin_soft_delete
             return false unless record.respond_to?(:deleted?)
@@ -47,7 +43,7 @@ module Decidim
         end
 
         def user_can_preview_space?
-          return false unless share_token.present?
+          return false if share_token.blank?
 
           Decidim::ShareToken.use!(token_for: record, token: share_token, user: subject)
         rescue ActiveRecord::RecordNotFound, StandardError

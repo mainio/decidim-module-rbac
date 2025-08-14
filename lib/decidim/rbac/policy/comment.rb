@@ -6,6 +6,7 @@ module Decidim
       class Comment < Default
         context_reader :commentable
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def able?(operation)
           case operation
           when :read
@@ -29,6 +30,7 @@ module Decidim
             false
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 
