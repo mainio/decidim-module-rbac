@@ -6,7 +6,7 @@ Decidim::RBAC.define do |reg|
   # directly to the roles instead of defining them first in groups.
 
   # decidim-accountability
-  res.group :accountability_admin do |group|
+  reg.group :accountability_admin do |group|
     group.resource :import_component do |res|
       res.operation :admin_create
     end
@@ -758,7 +758,7 @@ Decidim::RBAC.define do |reg|
   end
 
   # decidim-templates
-  res.group :templates_admin do |group|
+  reg.group :templates_admin do |group|
     group.resource :template do |res|
       res.operation :admin_read
       res.operation :admin_index
