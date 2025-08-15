@@ -17,7 +17,7 @@ module Decidim
 
       def policy(key, klass = nil)
         if klass.nil?
-          @policies[key] || Decidim::RBAC::Policy::Default
+          @policies[key]
         else
           @policies[key] = klass
         end
@@ -26,6 +26,8 @@ module Decidim
       def group(key, &)
         key = key.to_sym
         return @groups[key] unless block_given?
+
+        @groups[key] ||= {}
 
         roledef = Definition::Group.new
         roledef.instance_eval(&)

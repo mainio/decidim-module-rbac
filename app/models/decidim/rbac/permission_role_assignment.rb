@@ -17,9 +17,11 @@ module Decidim
       end
 
       def self.permissions
+        return {} if roles.empty?
+
         role_permissions = Decidim::RBAC.registry.roles(*roles)
-        role_permissions.values.inject({}) do |result, current|
-          result.deep_merge(current)
+        role_permissions.inject({}) do |result, role|
+          result.deep_merge(role.permissions)
         end
       end
     end

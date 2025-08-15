@@ -9,6 +9,8 @@ module Decidim
     autoload :PermissionSubject, "decidim/rbac/permission_subject"
     autoload :Registry, "decidim/rbac/registry"
     autoload :Scanner, "decidim/rbac/scanner"
+    autoload :Role, "decidim/rbac/role"
+    autoload :Policy, "decidim/rbac/policy"
 
     class << self
       delegate :roles, to: :registry
@@ -26,7 +28,11 @@ module Decidim
       registered = registry.policy(key)
       return registered if registered
 
-      autopolicy = "Policy::#{key.to_s.camelize}".safe_constantize
+      autopolicy = begin
+        Policy.const_get(key.to_s.camelize)
+      rescue NameError
+        nil
+      end
       return autopolicy if autopolicy
 
       Policy::Default
