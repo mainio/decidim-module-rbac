@@ -20,7 +20,7 @@ module Decidim
       extend ActiveSupport::Concern
 
       included do
-        has_many :permission_role_assignments, as: :subject, dependent: :destroy
+        has_many :permission_role_assignments, as: :subject, class_name: "Decidim::RBAC::PermissionRoleAssignment", dependent: :destroy
         # has_many :permission_roles, through: :permission_role_assignments
       end
 
