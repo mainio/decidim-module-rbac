@@ -609,7 +609,7 @@ Decidim::RBAC.define do |reg|
     end
 
     # Should be `participatory_space` -> `export`
-    role.resource :export_space do |res|
+    group.resource :export_space do |res|
       res.operation :create
     end
   end
