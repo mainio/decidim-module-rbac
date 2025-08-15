@@ -17,7 +17,7 @@ module Decidim
 
       def policy(key, klass = nil)
         if klass.nil?
-          @policies[key] || Decidim::RBAC::Policy::Default
+          @policies[key]
         else
           @policies[key] = klass
         end
