@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateRbacTables < ActiveRecord::Migration[6.1]
+class CreatePermissionRoleAssignments < ActiveRecord::Migration[6.1]
   def change
     # create_table :decidim_rbac_permission_role do |t|
     #   t.string :key, null: false
@@ -15,7 +15,7 @@ class CreateRbacTables < ActiveRecord::Migration[6.1]
     #
     # The `resource` is the type of the resouce represented as a string, e.g.
     # "organization".
-    create_table :decidim_rbac_permission_role_assignment do |t|
+    create_table :decidim_rbac_permission_role_assignments do |t|
       t.string :role, null: false
       t.references :record, null: false, polymorphic: true, index: { name: "index_permission_role_assignment_on_record" }
       t.references :subject, polymorphic: true, index: { name: "index_permission_role_assignment_on_subject" }
