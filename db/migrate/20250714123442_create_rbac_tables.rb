@@ -2,13 +2,6 @@
 
 class CreateRbacTables < ActiveRecord::Migration[6.1]
   def change
-    # create_table :decidim_rbac_permission_role do |t|
-    #   t.string :key, null: false
-    #   t.jsonb :permissions, null: false
-
-    #   t.timestamps
-    # end
-
     # The record has to be always defined even when the role assignment is not
     # specific to any record. In these cases, the record the role as assigned
     # against is the whole organization.
