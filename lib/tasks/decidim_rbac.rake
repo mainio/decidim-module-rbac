@@ -68,9 +68,7 @@ namespace :decidim_rbac do
   # This only needs to run once after the whole codebase is refactored to use RBAC.
   desc "Creates the initial role assignments after this module is installed."
   task assign_roles: :environment do
-    abort "There are already roles created. This task can be only run once after installation." if Decidim::RBAC::PermissionRole.any?
-
-    # Decidim::RBAC::PermissionRole.create!()
+    abort "There are already roles created. This task can be only run once after installation." if Decidim::RBAC::PermissionRoleAssignment.any?
 
     Decidim::Organization.find_each do |organization|
       users = Decidim::User
@@ -104,7 +102,7 @@ namespace :decidim_rbac do
 
     # rubocop:disable Lint/EmptyConditionalBody
     if Decidim.module_installed?(:assemblies)
-
+      # TODO: Same as processes
     end
 
     if Decidim.module_installed?(:conferences)
