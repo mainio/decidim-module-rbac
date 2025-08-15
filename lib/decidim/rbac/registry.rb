@@ -27,6 +27,8 @@ module Decidim
         key = key.to_sym
         return @groups[key] unless block_given?
 
+        @groups[key] ||= {}
+
         roledef = Definition::Group.new
         roledef.instance_eval(&)
         @groups[key].deep_merge!(roledef.resources)
