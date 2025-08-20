@@ -606,6 +606,7 @@ Decidim::RBAC.define do |reg|
     # all these permissions under `participatory_space`.
     group.resource :participatory_space do |res|
       res.operation :read
+      res.operation :admin_read
     end
 
     # Should be `participatory_space` -> `export`
@@ -643,6 +644,10 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_soft_delete
       res.operation :admin_restore
       res.operation :admin_destroy
+    end
+
+    group.resource :space_area do |res|
+      res.operation :admin_enter
     end
 
     group.resource :process_list do |res|
