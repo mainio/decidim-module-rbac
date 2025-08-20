@@ -5,7 +5,7 @@ module Decidim
     module Policy
       class AdminDashboard < Default
         def able?(operation)
-          operation == :read || operation == :admin_read
+          able_to_read_publicly?(operation)
         end
       end
     end

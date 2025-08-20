@@ -29,7 +29,6 @@ module Decidim
           case operation
           when :read
             return true if record.published?
-            return true if super(:admin_read)
             return true if user_can_preview_space?
           end
 

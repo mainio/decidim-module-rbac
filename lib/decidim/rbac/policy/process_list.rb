@@ -5,7 +5,7 @@ module Decidim
     module Policy
       class ProcessList < Default
         def able?(operation)
-          operation == :read
+          able_to_read_publicly?(operation)
         end
       end
     end
