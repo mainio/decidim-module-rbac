@@ -6,7 +6,7 @@ module Decidim
   # Common logic to work with the permissions system
   module NeedsPermission
     extend ActiveSupport::Concern
-    include RegistersPermissions
+    include Decidim::RegistersPermissions
 
     included do
       helper_method :allowed_to?, :admin_allowed_to?
@@ -52,7 +52,7 @@ module Decidim
           Rails.logger.debug "==========="
         end
 
-        raise Decidim::ActionForbidden unless allowed_to?(operation, permission, extra_context)
+        raise Decidim::ActionForbidden unless allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
       end
 
       # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -74,7 +74,7 @@ module Decidim
 
         # Ideally in the permission checks, we should already check against the
         # admin operations instead of providing the separate scope.
-        if scope == :admin
+        if scope == :admin || permission_scope == :admin
           policy.apply(:"admin_#{operation}")
         else
           policy.apply(operation.to_sym)

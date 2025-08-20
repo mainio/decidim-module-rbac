@@ -11,6 +11,7 @@ module Decidim
     autoload :Scanner, "decidim/rbac/scanner"
     autoload :Role, "decidim/rbac/role"
     autoload :Policy, "decidim/rbac/policy"
+    autoload :NeedsPermission, "decidim/rbac/needs_permission"
 
     class << self
       delegate :roles, to: :registry
