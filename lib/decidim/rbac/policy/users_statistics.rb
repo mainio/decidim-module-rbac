@@ -1,11 +1,11 @@
-# frozen_string_literal: true
+# frozen_string_literal 
 
 module Decidim
   module RBAC
     module Policy
-      class UserStatistics < Default
+      class UsersStatistics < Default
         def able?(operation)
-          operation == :read
+          operation == :admin_read
         end
       end
     end
