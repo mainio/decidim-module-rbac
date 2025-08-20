@@ -41,6 +41,17 @@ module Decidim
         load asset_config_path if File.exist?(asset_config_path)
       end
 
+      initializer "decidim_rbac.override_needs_permission" do 
+        # In order to make this module work, we need to over-ride the core `NeedsPermission` concern.
+        # The best way to do that is to remove the constant from the Zeitwerk, and load the file from the module.
+        # otherwise we need to include this over-ride to each and every class that implements NeedsPermission.
+        # After being merged to the core, this would simply be removed by replacing the content.
+        config.to_prepare do
+          Decidim.send(:remove_const, :NeedsPermission)
+          load ::Decidim::RBAC::Engine.root.join("lib/decidim/needs_permission.rb")
+        end
+      end
+
       initializer "decidim_rbac.customizations" do
         config.to_prepare do
           # Models
