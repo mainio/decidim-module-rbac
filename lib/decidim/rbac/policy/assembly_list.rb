@@ -3,7 +3,7 @@
 module Decidim
   module RBAC
     module Policy
-      class Assembly < Default
+      class AssemblyList < Default
         def able?(operation)
           operation == :admin_read
         end
