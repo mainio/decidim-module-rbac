@@ -52,8 +52,12 @@ module Decidim
           Rails.logger.debug "==========="
         end
 
-        raise Decidim::ActionForbidden unless allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
-      end
+        raise Decidim::ActionForbidden,
+          "Forbidden: op=#{operation.inspect}, permission=#{permission.inspect}, \n" \
+          "context=#{extra_context.inspect}, scope=#{permission_scope.inspect}, \n" \
+          "within: #{try(:current_component) || try(:current_participatory_space) || try(:current_organization)} \n"\
+          "user=#{current_user&.id || 'nil'}\n" unless allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
+          end
 
       # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def allowed_to?(operation, resource, extra_context = {}, _chain = permission_class_chain, subject = current_user, scope = nil)
@@ -75,6 +79,17 @@ module Decidim
         # Ideally in the permission checks, we should already check against the
         # admin operations instead of providing the separate scope.
         if scope == :admin || permission_scope == :admin
+          if policy.class.name == "Decidim::RBAC::Policy::ProcessStep"
+            puts "-----------"
+            puts "admin_#{operation}"
+            puts "POLICY #{policy.class.name}"
+            puts "WITHIN: #{within&.class&.name} ##{within&.id}"
+            puts "record: #{record&.class&.name}"
+            puts "subject: #{subject.id}"
+            puts policy.apply(:"admin_#{operation}").inspect
+            puts "-----------"
+          end
+          
           policy.apply(:"admin_#{operation}")
         else
           policy.apply(operation.to_sym)
