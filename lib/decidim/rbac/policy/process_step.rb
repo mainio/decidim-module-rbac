@@ -6,9 +6,9 @@ module Decidim
       class ProcessStep < Default
         def able?(operation)
           case operation
-          when :read, :create, :reorder
+          when :read, :admin_read, :create, :admin_create, :admin_reorder, :reorder
             true
-          when :update, :activate, :destroy
+          when :update, :admin_update, :activate, :admin_activate, :destroy, :admin_destroy
             record.present?
           end
         end
