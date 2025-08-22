@@ -671,6 +671,20 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_reorder
       res.operation :admin_update
     end
+
+    group.resource :component do |res|
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_reorder
+      res.operation :admin_manage_trash
+      res.operation :admin_manage
+      res.operation :admin_update
+      res.operation :admin_publish
+      res.operation :admin_unpublish
+      res.operation :admin_share
+      res.operation :admin_soft_delete
+      res.operation :admin_restore
+    end
   end
 
   # decidim-proposals
