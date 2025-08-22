@@ -203,7 +203,7 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_destroy
     end
 
-    group.resource :share_tokens do |res|
+    group.resource :share_token do |res|
       res.operation :admin_read
       res.operation :admin_create
       res.operation :admin_update
@@ -713,6 +713,13 @@ Decidim::RBAC.define do |reg|
     group.resource :moderation do |res|
       res.operation :admin_create
       res.operation :admin_read
+    end
+
+    group.resource :share_token do |res|
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_update
+      res.operation :admin_destroy
     end
   end
 

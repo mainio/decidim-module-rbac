@@ -79,7 +79,7 @@ module Decidim
         # Ideally in the permission checks, we should already check against the
         # admin operations instead of providing the separate scope.
         if scope == :admin || permission_scope == :admin
-          if policy.class.name == "Decidim::RBAC::Policy::ProcessStep"
+          if policy.class.name == "Decidim::RBAC::Policy::ShareToken"
             puts "-----------"
             puts "admin_#{operation}"
             puts "POLICY #{policy.class.name}"
