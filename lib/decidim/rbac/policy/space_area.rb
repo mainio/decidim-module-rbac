@@ -16,9 +16,13 @@ module Decidim
         private
 
         def able_to_enter_space?
-          record_types = subject.permission_role_assignments.pluck(:record_type)
-
-          record_types.include?(space_types[space_name])
+          permission_roles = subject.permission_role_assignments
+          return true if permission_roles.map(&:record_type).include?(space_types[space_name])
+          
+          # users with admin role on the organization level should also be able to 
+          # enter spaces regardless of the space_types, thats why this 
+          # check is being added for entering spaces.
+          able_to_admin?(permission_roles)
         end
 
         def space_types
@@ -29,6 +33,13 @@ module Decidim
             processes: "Decidim::ParticipatoryProcess",
             process_groups: "Decidim::ParticipatoryProcessGroup"
           }
+        end
+
+        def able_to_admin?(permission_roles)
+          resource = record || within
+          return unless resource.is_a?(Decidim::Organization)
+          
+          permission_roles.any?{|assignment| assignment.record == resource && assignment.role == "organization_admin"}
         end
       end
     end
