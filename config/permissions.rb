@@ -685,6 +685,35 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_soft_delete
       res.operation :admin_restore
     end
+
+     group.resource :attachment_collection do |res|
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_update
+      res.operation :admin_destroy
+    end
+
+    group.resource :attachment do |res|
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_update
+      res.operation :admin_destroy
+    end
+
+    group.resource :space_private_user do |res|
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_csv_import
+      res.operation :admin_update
+      res.operation :admin_edit
+      res.operation :admin_destroy
+      res.operation :admin_invite
+    end
+
+    group.resource :moderation do |res|
+      res.operation :admin_create
+      res.operation :admin_read
+    end
   end
 
   # decidim-proposals
