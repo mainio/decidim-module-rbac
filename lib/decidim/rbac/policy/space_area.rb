@@ -18,7 +18,7 @@ module Decidim
           # an organization admin.
           @record ||= begin
             record_type = record_types[space_name]
-            subject.find_all_record_types(record_type, context[:current_organization]) if record_type
+            subject.find_all_record_types(record_type) if record_type
           end
 
           super

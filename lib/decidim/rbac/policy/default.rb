@@ -22,10 +22,10 @@ module Decidim
           end
         end
 
-        def initialize(record:, subject: nil, context:, **attributes)
+        def initialize(record:, subject: nil, within:, **attributes)
           @record = record
           @subject = subject
-          @context = context
+          @within = within
           self.class.context_readers.each do |name, varname|
             instance_variable_set("@#{varname}", attributes.fetch(name, nil))
           end
@@ -68,7 +68,7 @@ module Decidim
 
         private
 
-        attr_reader :record, :subject, :context
+        attr_reader :record, :subject, :within
 
         def has_permission?(operation)
           operations = permissions[resource_key]
@@ -84,7 +84,7 @@ module Decidim
         def permissions
           @permissions ||=
             if subject.present?
-              subject.permissions_within(Array(record).push(context.values).flatten)
+              subject.permissions_within(Array(record).push(Array(within)).flatten.compact)
             else
               Decidim::RBAC.registry.role(:visitor).values
             end

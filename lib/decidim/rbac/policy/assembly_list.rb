@@ -14,7 +14,7 @@ module Decidim
           # entire list.
           return  Decidim::RBAC.registry.role(:visitor).values unless subject.present?
 
-          @record ||= subject.find_all_record_types("Decidim::Assembly", context[:current_organization])
+          @record ||= subject.find_all_record_types("Decidim::Assembly")
 
           super
         end

@@ -27,11 +27,13 @@ module Decidim
       def permissions_within(records)
         # Check permissions within all these records as the user may have given
         # different roles within these contexts.
-        # records.each do |record|
-        #   records << record.component if record.respond_to?(:component)
-        #   records << record.participatory_space if record.respond_to?(:participatory_space)
-        #   records << record.organization if record.respond_to?(:organization)
-        # end
+        expanded_records = records.flat_map do |record|
+          [record,
+            (record.respond_to?(:component) ? record.component : nil),
+            (record.respond_to?(:participatory_space) ? record.participatory_space : nil),
+            (record.respond_to?(:organization) ? record.organization : nil)
+          ]
+        end
 
         permission_role_assignments.where(record: records.compact.uniq).permissions
       end
@@ -42,15 +44,16 @@ module Decidim
         permission_role_assignments.create!(key: role, resource: resource || organization)
       end
 
-      def find_all_record_types(record_types, organization)
+      def find_all_record_types(record_types)
         Array(record_types).flat_map do |record_type|
           table = type_to_table(record_type)
           next [] unless table
 
           permission_role_assignments
             .where(record_type: record_type)
+            .where("decidim_rbac_permission_role_assignments.role LIKE ?", "%_admin")
             .joins("INNER JOIN #{table} ON #{table}.id = decidim_rbac_permission_role_assignments.record_id")
-            .where("#{table}.decidim_organization_id = ?", organization.id)
+            .where("#{table}.decidim_organization_id = ?", current_organization.id)
             .map(&:record)
         end.uniq
       end
@@ -64,6 +67,10 @@ module Decidim
           "Decidim::Assembly"                  => "decidim_assemblies"
         }
         candidates[type]
+      end
+
+      def current_organization 
+        @current_organization ||= organization
       end
     end
   end

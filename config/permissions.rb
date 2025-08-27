@@ -321,6 +321,56 @@ Decidim::RBAC.define do |reg|
     group.resource :members do |res|
       res.operation :admin_read
     end
+
+    group.resource :component do |res|
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_reorder
+      res.operation :admin_manage_trash
+      res.operation :admin_manage
+      res.operation :admin_update
+      res.operation :admin_publish
+      res.operation :admin_unpublish
+      res.operation :admin_share
+      res.operation :admin_soft_delete
+      res.operation :admin_restore
+    end
+
+    group.resource :attachment_collection do |res|
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_update
+      res.operation :admin_destroy
+    end
+
+    group.resource :attachment do |res|
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_update
+      res.operation :admin_destroy
+    end
+
+    group.resource :space_private_user do |res|
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_csv_import
+      res.operation :admin_update
+      res.operation :admin_edit
+      res.operation :admin_destroy
+      res.operation :admin_invite
+    end
+
+    group.resource :moderation do |res|
+      res.operation :admin_create
+      res.operation :admin_read
+    end
+
+    group.resource :share_token do |res|
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_update
+      res.operation :admin_destroy
+    end
   end
 
   # decidim-blogs
