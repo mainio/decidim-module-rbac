@@ -8,38 +8,30 @@ module Decidim
 
         def able?(operation)
           return false unless subject
-          return false unless operation == :admin_enter
-
-          able_to_enter_space?
+          operation == :admin_enter
         end
 
-        private
+        def allowed?(_operation)
+          # If the user has a process/space inside the organization, that has the 
+          # permission to enter as an admin, they should be able to enter the space, 
+          # otherwise they should not even be able to enter the space, unless they are 
+          # an organization admin.
+          @record ||= begin
+            record_type = record_types[space_name]
+            subject.find_all_record_types(record_type, context[:current_organization]) if record_type
+          end
 
-        def able_to_enter_space?
-          permission_roles = subject.permission_role_assignments
-          return true if permission_roles.map(&:record_type).include?(space_types[space_name])
-          
-          # users with admin role on the organization level should also be able to 
-          # enter spaces regardless of the space_types, thats why this 
-          # check is being added for entering spaces.
-          able_to_admin?(permission_roles)
+          super
         end
 
-        def space_types
+        private 
+
+        def record_types 
           {
             assemblies: "Decidim::Assembly",
-            conferences: "Decidim::Conference",
-            initiatives: "Decidim::Initiative",
             processes: "Decidim::ParticipatoryProcess",
-            process_groups: "Decidim::ParticipatoryProcessGroup"
+            process_groups: "Decidim::ParticipatoryGroupProcess"
           }
-        end
-
-        def able_to_admin?(permission_roles)
-          resource = record || within
-          return unless resource.is_a?(Decidim::Organization)
-          
-          permission_roles.any?{|assignment| assignment.record == resource && assignment.role == "organization_admin"}
         end
       end
     end

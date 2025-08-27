@@ -7,6 +7,17 @@ module Decidim
         def able?(operation)
           able_to_read_publicly?(operation)
         end
+
+        def allowed?(operation)
+          # If the permission owner has permission to see the list for 
+          # one of its processes,it should have the permission to see the 
+          # entire list.
+          return  Decidim::RBAC.registry.role(:visitor).values unless subject.present?
+
+          @record ||= subject.find_all_record_types("Decidim::ParticipatoryProcess", context[:current_organization])
+
+          super
+        end
       end
     end
   end

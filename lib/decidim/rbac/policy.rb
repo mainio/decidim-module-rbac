@@ -37,7 +37,6 @@ module Decidim
       autoload :ImpersonatableUser, "decidim/rbac/policy/impersonatable_user"
       autoload :ImportComponent, "decidim/rbac/policy/import_component"
       autoload :Import, "decidim/rbac/policy/import"
-      autoload :Initiative, "decidim/rbac/policy/initiative"
       autoload :Like, "decidim/rbac/policy/like"
       autoload :Locales, "decidim/rbac/policy/locales"
       autoload :ManagedUser, "decidim/rbac/policy/managed_user"

@@ -52,16 +52,29 @@ module Decidim
           Rails.logger.debug "==========="
         end
 
-        raise Decidim::ActionForbidden,
-          "Forbidden: op=#{operation.inspect}, permission=#{permission.inspect}, \n" \
-          "context=#{extra_context.inspect}, scope=#{permission_scope.inspect}, \n" \
-          "within: #{try(:current_component) || try(:current_participatory_space) || try(:current_organization)} \n"\
-          "user=#{current_user&.id || 'nil'}\n" unless allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
-          end
+        # allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
+        unless allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
+          record = extra_context[:record] || extra_context[:resource]
+          record ||= extra_context[permission] if permission.is_a?(Symbol)
+          record ||= extra_context[:trashable_deleted_resource] if extra_context.has_key?(:trashable_deleted_resource) && [:restore, :soft_delete, :read].include?(operation)
+
+          within = record || try(:current_component) || try(:current_participatory_space) || try(:current_organization)
+
+          raise Decidim::ActionForbidden,
+            "Forbidden: operation=#{operation.inspect}, permission=#{permission.inspect}, \n" \
+            "within: #{within&.class&.name} ID: #{within&.id}\n"\
+            "record: #{record&.class&.name} ID: #{record&.id}\n"\
+            "context=#{extra_context.inspect}, scope=#{permission_scope.inspect}, \n" \
+            "policy class #{RBAC.policy(record)}\n" \
+            "within: #{try(:current_component) || try(:current_participatory_space) || try(:current_organization)} \n"\
+            "user=#{current_user&.id || 'nil'}\n"
+        end
+        # raise Decidim::ActionForbidden unless allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
+      end
 
       # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def allowed_to?(operation, resource, extra_context = {}, _chain = permission_class_chain, subject = current_user, scope = nil)
-        # These are just a way to try to make it work with all the cases that
+      # These are just a way to try to make it work with all the cases that
         # use this method. Ideally, those parts that are not compatible with the
         # API should be rewritten in the future.
         record = extra_context[:record] || extra_context[:resource]
@@ -79,8 +92,8 @@ module Decidim
         # Ideally in the permission checks, we should already check against the
         # admin operations instead of providing the separate scope.
         if scope == :admin || permission_scope == :admin
-          if policy.class.name == "Decidim::RBAC::Policy::ShareToken"
-            puts "-----------"
+         
+            puts "-----------" * 100
             puts "admin_#{operation}"
             puts "POLICY #{policy.class.name}"
             puts "WITHIN: #{within&.class&.name} ##{within&.id}"
@@ -88,7 +101,6 @@ module Decidim
             puts "subject: #{subject.id}"
             puts policy.apply(:"admin_#{operation}").inspect
             puts "-----------"
-          end
           
           policy.apply(:"admin_#{operation}")
         else
