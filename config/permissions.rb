@@ -314,6 +314,10 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_destroy
     end
 
+    group.resource :space_area do |res|
+      res.operation :admin_enter
+    end
+
     group.resource :members do |res|
       res.operation :admin_read
     end

@@ -5,7 +5,18 @@ module Decidim
     module Policy
       class AssemblyList < Default
         def able?(operation)
-          operation == :admin_read
+          able_to_read_publicly?(operation)
+        end
+
+        def allowed?(operation)
+          # If the permission owner has permission to see the list for 
+          # one of its assemblies,it should have the permission to see the 
+          # entire list.
+          return  Decidim::RBAC.registry.role(:visitor).values unless subject.present?
+
+          @record ||= subject.find_all_record_types("Decidim::Assembly", context[:current_organization])
+
+          super
         end
       end
     end
