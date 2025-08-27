@@ -22,11 +22,10 @@ module Decidim
           end
         end
 
-        def initialize(record:, subject: nil, within:, **attributes)
+        def initialize(record:, subject: nil, context:, **attributes)
           @record = record
           @subject = subject
-          @within = within
-          @context = context_from_attributes(attributes)
+          @context = context
           self.class.context_readers.each do |name, varname|
             instance_variable_set("@#{varname}", attributes.fetch(name, nil))
           end
@@ -69,7 +68,7 @@ module Decidim
 
         private
 
-        attr_reader :record, :subject, :within, :context
+        attr_reader :record, :subject, :context
 
         def has_permission?(operation)
           operations = permissions[resource_key]
@@ -85,7 +84,7 @@ module Decidim
         def permissions
           @permissions ||=
             if subject.present?
-              subject.permissions_within(Array(record).push(within))
+              subject.permissions_within(Array(record).push(context.values).flatten)
             else
               Decidim::RBAC.registry.role(:visitor).values
             end
@@ -93,16 +92,6 @@ module Decidim
 
         def able_to_read_publicly?(operation)
           [:read, :admin_read].include?(operation)
-        end
-
-        def context_from_attributes(attributes)
-          {
-            current_settings: attributes.fetch(:current_settings, nil),
-            component_settings:  attributes.fetch(:component_settings, nil),
-            current_organization:  attributes.fetch(:current_organization, nil),
-            current_component:  attributes.fetch(:current_component, nil),
-            share_token:  attributes.fetch(:store_share_token, nil)
-          }
         end
       end
     end

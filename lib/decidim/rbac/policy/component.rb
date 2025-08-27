@@ -28,7 +28,7 @@ module Decidim
         def allowed?(operation)
           case operation
           when :read
-            return true if (record || within).published?
+            return true if record.published?
             return true if user_can_preview_component?
           end
 

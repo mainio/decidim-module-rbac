@@ -27,11 +27,11 @@ module Decidim
       def permissions_within(records)
         # Check permissions within all these records as the user may have given
         # different roles within these contexts.
-        records.each do |record|
-          records << record.component if record.respond_to?(:component)
-          records << record.participatory_space if record.respond_to?(:participatory_space)
-          records << record.organization if record.respond_to?(:organization)
-        end
+        # records.each do |record|
+        #   records << record.component if record.respond_to?(:component)
+        #   records << record.participatory_space if record.respond_to?(:participatory_space)
+        #   records << record.organization if record.respond_to?(:organization)
+        # end
 
         permission_role_assignments.where(record: records.compact.uniq).permissions
       end
