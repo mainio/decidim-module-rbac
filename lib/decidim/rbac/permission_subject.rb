@@ -35,7 +35,7 @@ module Decidim
           ]
         end
 
-        permission_role_assignments.where(record: records.compact.uniq).permissions
+        permission_role_assignments.where(record: expanded_records.compact.uniq).permissions
       end
 
       def assign_role!(role, resource: nil)
