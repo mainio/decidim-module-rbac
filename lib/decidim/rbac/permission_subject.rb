@@ -44,17 +44,23 @@ module Decidim
         permission_role_assignments.create!(key: role, resource: resource || organization)
       end
 
-      def find_all_record_types(record_types)
-        Array(record_types).flat_map do |record_type|
-          table = type_to_table(record_type)
+      def accessible_records(space_classes = supported_space_classes)
+        Array(space_classes).flat_map do |space_class|
+          next unless class_name_supported?(space_class)
+
+          table = space_class.constantize&.table_name
           next [] unless table
 
-          permission_role_assignments
-            .where(record_type: record_type)
-            .where("decidim_rbac_permission_role_assignments.role LIKE ?", "%_admin")
-            .joins("INNER JOIN #{table} ON #{table}.id = decidim_rbac_permission_role_assignments.record_id")
-            .where("#{table}.decidim_organization_id = ?", current_organization.id)
-            .map(&:record)
+          roles_scope = permission_role_assignments
+                          .where(record_type: space_class)
+                          .joins("INNER JOIN #{table} ON #{table}.id = decidim_rbac_permission_role_assignments.record_id")
+                          .where("#{table}.decidim_organization_id = ?", current_organization.id)
+                          .where(
+                            "decidim_rbac_permission_role_assignments.role IN (?) OR decidim_rbac_permission_role_assignments.role LIKE ?",
+                            privileged_roles, "%_admin"
+                          )
+
+          roles_scope.map(&:record)
         end.uniq
       end
 
@@ -64,17 +70,20 @@ module Decidim
 
       private
 
-      def type_to_table(type)
-        candidates = {
-          "Decidim::ParticipatoryProcess"      => "decidim_participatory_processes",
-          "Decidim::ParticipatoryProcessGroup" => "decidim_participatory_process_groups",
-          "Decidim::Assembly"                  => "decidim_assemblies"
-        }
-        candidates[type]
+      def class_name_supported?(class_name)
+        supported_space_classes.include?(class_name)
       end
 
       def current_organization 
         @current_organization ||= organization
+      end
+
+      def privileged_roles
+        @privileged_roles ||= ::Decidim::RBAC.privileged_roles
+      end
+
+      def supported_space_classes
+        @supported_space_classes ||= ::Decidim::RBAC.supported_space_classes
       end
     end
   end

@@ -74,9 +74,17 @@ namespace :decidim_rbac do
       users = Decidim::User
       users = users.entire_collection if users.respond_to?(:entire_collection)
 
-      users.where(organization: organization, admin: true).find_each do |user|
-        # TODO: Add admin permissions within the organization
+      assignments = users.where(organization: organization, admin: true).map do |user|
+        {
+          subject_type: "Decidim::UserBaseEntity",
+          subject_id: user.id,
+          role: "organization_admin",
+          record_type: "Decidim::Organization",
+          record_id: organization.id
+        }
       end
+
+      Decidim::RBAC::PermissionRoleAssignment.insert_all(assignments)
     end
 
     if Decidim.module_installed?(:participatory_processes)

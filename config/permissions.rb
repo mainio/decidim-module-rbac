@@ -1256,4 +1256,32 @@ Decidim::RBAC.define do |reg|
       res.operation :read_public
     end
   end
+
+  # === Collaborator role ===
+  reg.role :collaborator do |role|
+    role.resource :assembly_list do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :process_list do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :participatory_space do |res|
+      res.operation :admin_preview
+    end
+
+    role.resource :assembly do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :admin_dashboard do |res|
+      res.operation :read
+      res.operation :admin_read
+    end
+
+    role.resource :space_area do |res|
+      res.operation :admin_enter
+    end
+  end
 end

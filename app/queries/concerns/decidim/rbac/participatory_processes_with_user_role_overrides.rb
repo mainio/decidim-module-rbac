@@ -15,7 +15,7 @@ module Decidim
         private 
 
         def process_ids
-          user.find_all_record_types("Decidim::ParticipatoryProcess").map(&:id)
+          user.accessible_records("Decidim::ParticipatoryProcess").map(&:id)
         end
       end
     end

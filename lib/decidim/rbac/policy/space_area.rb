@@ -17,8 +17,8 @@ module Decidim
           # otherwise they should not even be able to enter the space, unless they are 
           # an organization admin.
           @record ||= begin
-            record_type = record_types[space_name]
-            subject.find_all_record_types(record_type) if record_type
+            space_class = space_classes[space_name]
+            subject.accessible_records(space_class) if space_class
           end
 
           super
@@ -26,7 +26,7 @@ module Decidim
 
         private 
 
-        def record_types 
+        def space_classes
           {
             assemblies: "Decidim::Assembly",
             processes: "Decidim::ParticipatoryProcess",

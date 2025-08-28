@@ -15,7 +15,7 @@ module Decidim
         private 
 
         def assembly_ids
-          user.find_all_record_types("Decidim::Assembly").map(&:id)
+          user.accessible_records("Decidim::Assembly").map(&:id)
         end
       end
     end

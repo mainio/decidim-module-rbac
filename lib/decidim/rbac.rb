@@ -13,6 +13,18 @@ module Decidim
     autoload :Policy, "decidim/rbac/policy"
     autoload :NeedsPermission, "decidim/rbac/needs_permission"
 
+    PRIVILAGED_ROLES = [
+      "collaborator",
+      "valuator",
+      "moderator"
+    ].freeze
+
+    SUPPORTED_SPACE_CLASSES = [
+      "Decidim::ParticipatoryProcess",
+      "Decidim::ParticipatoryProcessGroup",
+      "Decidim::Assembly"
+  ].freeze
+
     class << self
       delegate :roles, to: :registry
     end
@@ -37,6 +49,14 @@ module Decidim
       return autopolicy if autopolicy
 
       Policy::Default
+    end
+
+    def self.privileged_roles
+      PRIVILAGED_ROLES
+    end
+
+    def self.supported_space_classes 
+      SUPPORTED_SPACE_CLASSES
     end
   end
 end

@@ -14,7 +14,7 @@ module Decidim
           # entire list.
           return  Decidim::RBAC.registry.role(:visitor).values unless subject.present?
 
-          @record ||= subject.find_all_record_types("Decidim::ParticipatoryProcess")
+          @record ||= subject.accessible_records("Decidim::ParticipatoryProcess")
 
           super
         end
