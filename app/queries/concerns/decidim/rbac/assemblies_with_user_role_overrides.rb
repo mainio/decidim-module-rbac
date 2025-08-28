@@ -15,7 +15,7 @@ module Decidim
         private 
 
         def assembly_ids
-          raise user.find_all_record_types("Decidim::Assembly").map(&:id).inspect
+          user.find_all_record_types("Decidim::Assembly").map(&:id)
         end
       end
     end

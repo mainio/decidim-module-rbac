@@ -58,6 +58,10 @@ module Decidim
         end.uniq
       end
 
+      def is_organization_admin?
+        permission_role_assignments.exists?(role: "organization_admin", record: organization)
+      end
+
       private
 
       def type_to_table(type)
