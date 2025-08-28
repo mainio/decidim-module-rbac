@@ -57,7 +57,8 @@ module Decidim
           # Models
           Decidim::UserBaseEntity.include(Decidim::RBAC::PermissionSubject)
           # Queries
-          Decidim::ParticipatoryProcessesWithUserRole.include(Decidim::RBAC::ParticipatoryProcessesWithCustomProcessIds) 
+          Decidim::ParticipatoryProcessesWithUserRole.include(Decidim::RBAC::ParticipatoryProcessesWithUserRoleOverrides)
+          Decidim::Assemblies::AssembliesWithUserRole.include(Decidim::RBAC::AssembliesWithUserRoleOverrides)
         end
       end
     end
