@@ -56,6 +56,8 @@ module Decidim
         config.to_prepare do
           # Models
           Decidim::UserBaseEntity.include(Decidim::RBAC::PermissionSubject)
+          # Queries
+          Decidim::ParticipatoryProcessesWithUserRole.include(Decidim::RBAC::ParticipatoryProcessesWithCustomProcessIds) 
         end
       end
     end
