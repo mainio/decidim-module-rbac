@@ -512,10 +512,6 @@ Decidim::RBAC.define do |reg|
       res.operation :create
     end
 
-    group.resource :participatory_space do |res|
-      res.operation :read
-    end
-
     group.resource :user do |res|
       res.operation :read
       res.operation :show
