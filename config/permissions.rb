@@ -1267,12 +1267,13 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_read
     end
 
-    role.resource :participatory_space do |res|
+    role.resource :process do |res|
       res.operation :admin_preview
     end
 
     role.resource :assembly do |res|
       res.operation :admin_read
+      res.operation :admin_preview
     end
 
     role.resource :admin_dashboard do |res|
