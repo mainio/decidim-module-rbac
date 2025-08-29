@@ -1263,12 +1263,25 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_read
     end
 
+    role.resource :comment do |res|
+      res.operation :read
+      res.operation :create
+      res.operation :update
+      res.operation :destroy
+      res.operation :vote
+    end
+
     role.resource :process_list do |res|
       res.operation :admin_read
     end
 
     role.resource :process do |res|
       res.operation :admin_preview
+      res.operation :read
+    end
+
+    role.resource :participatory_space do |res|
+      res.operation :read
     end
 
     role.resource :assembly do |res|

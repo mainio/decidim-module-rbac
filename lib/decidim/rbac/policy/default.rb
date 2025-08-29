@@ -84,14 +84,24 @@ module Decidim
         def permissions
           @permissions ||=
             if subject.present?
-              subject.permissions_within(Array(record).push(Array(within)).flatten.compact)
+              subject.permissions_within(record_with_contexts)
             else
-              Decidim::RBAC.registry.role(:visitor).values
+              Decidim::RBAC.registry.role(:visitor).permissions
             end
         end
 
         def able_to_read_publicly?(operation)
           [:read, :admin_read].include?(operation)
+        end
+
+        def record_with_contexts
+          (Array(record) + Array(within)).compact.flat_map do |item|
+            result = [item]
+            result << item.participatory_space if item.respond_to?(:participatory_space)
+            result << item.organization if item.respond_to?(:organization)
+            result << item.component if item.respond_to?(:component)
+            result
+          end.uniq
         end
       end
     end

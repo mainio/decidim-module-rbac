@@ -8,6 +8,7 @@ module Decidim
 
         # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def able?(operation)
+          return unless record.present?
           case operation
           when :read
             commentable.commentable?
@@ -35,7 +36,9 @@ module Decidim
         private
 
         def commentable
-          record&.root_commentable || super
+          return record unless record.is_a?(::Decidim::Comments::Comment)
+          
+          record.root_commentable
         end
       end
     end
