@@ -1298,4 +1298,60 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_enter
     end
   end
+
+  # === Moderator role ===
+  reg.role :moderator do |role|
+    role.resource :assembly_list do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :process_list do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :process do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :assembly do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :participatory_space do |res|
+      res.operation :read
+      res.operation :admin_read
+    end
+
+    role.resource :admin_dashboard do |res|
+      res.operation :read
+      res.operation :admin_read
+    end
+
+    role.resource :space_area do |res|
+      res.operation :admin_enter
+    end
+
+    role.resource :global_moderation do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :moderation do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :global_moderation do |res|
+      res.operation :admin_destroy
+      res.operation :admin_block
+      res.operation :admin_read
+      res.operation :admin_unreport
+    end
+
+    role.resource :moderate_users do |res|
+      res.operation :admin_destroy
+      res.operation :admin_block
+      res.operation :admin_read
+      res.operation :admin_unreport
+      res.operation :admin_hide
+    end
+  end
 end
