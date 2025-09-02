@@ -11,11 +11,19 @@ module Decidim
           case operation
           when :admin_destroy, :admin_block
             record != subject
-          when :admin_read, :admin_unreport
+          when :admin_read, :admin_unreport, :admin_index
             true
           else
             false
           end
+        end
+
+        def allowed?(_operation)
+          return unless subject.present?
+
+          @record ||= subject.organization
+
+          super
         end
       end
     end

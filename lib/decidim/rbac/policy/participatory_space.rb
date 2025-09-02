@@ -38,7 +38,7 @@ module Decidim
         private
 
         def record
-          super || current_participatory_space
+          @record ||= current_participatory_space
         end
 
         def user_can_preview_space?

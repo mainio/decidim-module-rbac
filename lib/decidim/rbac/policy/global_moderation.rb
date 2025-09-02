@@ -4,12 +4,12 @@ module Decidim
   module RBAC
     module Policy
       class GlobalModeration < Default
-        def able?(operation)
-          return false unless operation == :admin_read
-          return false unless subject
-          return false unless subject.respond_to?(:admin_terms_accepted?)
+        def allowed?(operation)
+          return unless subject.present?
 
-          subject.admin_terms_accepted?
+          @record ||= subject.accessible_records
+
+          super
         end
       end
     end

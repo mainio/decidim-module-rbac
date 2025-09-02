@@ -4,18 +4,18 @@ module Decidim
   module RBAC
     module Policy
       class Moderation < Default
-        def able?(operation)
-          case operation
-          when :admin_read, :admin_create
-            true
-          else
-            false
-          end
-        end
+        context_reader :process, :assembly, :current_participatory_space
 
-        def allowed?(_operation)
-          @record ||=
-            subject.accessible_records
+        def allowed?(operation)
+          case operation 
+          when :create
+            return true
+          when :admin_read
+            @record = process || assembly || current_participatory_space
+          else 
+            @record = subject.accessible_records
+          end
+
           super
         end
       end
