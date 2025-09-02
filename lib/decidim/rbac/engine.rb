@@ -60,6 +60,8 @@ module Decidim
           Decidim::ParticipatoryProcessesWithUserRole.include(Decidim::RBAC::ParticipatoryProcessesWithUserRoleOverrides)
           Decidim::Assemblies::AssembliesWithUserRole.include(Decidim::RBAC::AssembliesWithUserRoleOverrides)
           Decidim::Admin::ModerationStats.include(Decidim::RBAC::ModerationStatsOverrides)
+          # Constraints
+          Decidim::Admin::OrganizationDashboardConstraint.include(Decidim::RBAC::OrganizationDashboardConstraintOverrides)
         end
       end
     end
