@@ -16,7 +16,8 @@ module Decidim
     PRIVILAGED_ROLES = [
       "collaborator",
       "valuator",
-      "moderator"
+      "moderator",
+      "user_manager"
     ].freeze
 
     SUPPORTED_SPACE_CLASSES = [

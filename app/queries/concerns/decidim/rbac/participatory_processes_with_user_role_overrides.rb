@@ -9,6 +9,7 @@ module Decidim
 
         def query
           return ParticipatoryProcesses::OrganizationParticipatoryProcesses.new(user.organization).query if user.is_organization_admin?
+
           ParticipatoryProcess.where(id: process_ids)
         end
 

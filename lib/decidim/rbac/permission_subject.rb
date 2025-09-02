@@ -44,15 +44,18 @@ module Decidim
         permission_role_assignments.create!(key: role, resource: resource || organization)
       end
 
-      def accessible_records(space_classes = supported_space_classes)
-        Array(space_classes).flat_map do |space_class|
-          next unless class_name_supported?(space_class)
+      def accessible_records(applicable_classes=nil)
+        puts "applicable classes: #{applicable_classes}"
+        return all_accessible_records unless applicable_classes.present?
+        
+        Array(applicable_classes).flat_map do |klass|
+          next unless class_name_supported?(klass)
 
-          table = space_class.constantize&.table_name
+          table = klass.constantize&.table_name
           next [] unless table
 
           roles_scope = permission_role_assignments
-                          .where(record_type: space_class)
+                          .where(record_type: klass)
                           .joins("INNER JOIN #{table} ON #{table}.id = decidim_rbac_permission_role_assignments.record_id")
                           .where("#{table}.decidim_organization_id = ?", current_organization.id)
                           .where(
@@ -84,6 +87,13 @@ module Decidim
 
       def supported_space_classes
         @supported_space_classes ||= ::Decidim::RBAC.supported_space_classes
+      end
+
+      def all_accessible_records
+        permission_role_assignments.where(
+          "decidim_rbac_permission_role_assignments.role IN (?) OR decidim_rbac_permission_role_assignments.role LIKE ?",
+          privileged_roles, "%_admin"
+        ).map(&:record)
       end
     end
   end
