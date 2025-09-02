@@ -59,6 +59,7 @@ module Decidim
           # Queries
           Decidim::ParticipatoryProcessesWithUserRole.include(Decidim::RBAC::ParticipatoryProcessesWithUserRoleOverrides)
           Decidim::Assemblies::AssembliesWithUserRole.include(Decidim::RBAC::AssembliesWithUserRoleOverrides)
+          Decidim::Admin::ModerationStats.include(Decidim::RBAC::ModerationStatsOverrides)
         end
       end
     end
