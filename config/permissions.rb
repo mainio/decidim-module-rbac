@@ -173,6 +173,7 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_read
       res.operation :admin_create
       res.operation :admin_destroy
+      res.operation :admin_index
     end
 
     group.resource :user do |res|
@@ -968,6 +969,7 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_read
       res.operation :admin_create
       res.operation :admin_destroy
+      res.operation :admin_index
     end
 
     role.resource :moderate_users do |res|
