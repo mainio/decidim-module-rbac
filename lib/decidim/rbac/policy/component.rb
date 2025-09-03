@@ -4,7 +4,7 @@ module Decidim
   module RBAC
     module Policy
       class Component < Default
-        context_reader :share_token
+        context_reader :share_token, :process, :component, :assembly
 
         def able?(operation)
           case operation
@@ -30,6 +30,8 @@ module Decidim
           when :read
             return true if record.published?
             return true if user_can_preview_component?
+          else
+            @record ||= process || assembly || component&.participatory_space
           end
 
           super

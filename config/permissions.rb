@@ -994,8 +994,38 @@ Decidim::RBAC.define do |reg|
     end
   end
 
-  reg.role :proposal_evaluator do |role|
+  reg.role :evaluator do |role|
     # decidim-admin
+    role.resource :proposal do |res|
+      res.operation :admin_read
+    end
+    
+    role.resource :process_list do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :space_area do |res|
+      res.operation :admin_enter
+    end
+
+    role.resource :process do |res|
+      res.operation :admin_preview
+      res.operation :admin_read
+    end
+
+    role.resource :participatory_space do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :assembly do |res|
+      res.operation :admin_read
+      res.operation :admin_preview
+    end
+
+    role.resource :component do |res|
+      res.operation :admin_read
+    end
+
     role.resource :admin_dashboard do |res|
       res.operation :read
       res.operation :admin_read

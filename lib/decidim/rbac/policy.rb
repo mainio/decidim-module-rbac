@@ -61,6 +61,7 @@ module Decidim
       autoload :ProjectSelected, "decidim/rbac/policy/project_selected"
       autoload :ProjectTaxonomy, "decidim/rbac/policy/project_taxonomy"
       autoload :Proposal, "decidim/rbac/policy/proposal"
+      autoload :ProposalAnswer, "decidim/rbac/policy/proposal_answer"
       autoload :Proposals, "decidim/rbac/policy/proposals"
       autoload :PublicPage, "decidim/rbac/policy/public_page"
       autoload :Question, "decidim/rbac/policy/question"
