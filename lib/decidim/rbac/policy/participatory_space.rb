@@ -30,6 +30,9 @@ module Decidim
           when :read
             return true if record.published?
             return true if user_can_preview_space?
+          when :list
+            @record ||= 
+              subject.accessible_records("Decidim::ParticipatoryProcess")
           end
 
           super

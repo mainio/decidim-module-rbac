@@ -18,7 +18,8 @@ module Decidim
       "valuator",
       "moderator",
       "user_manager",
-      "evaluator"
+      "evaluator",
+      "private_participant"
     ].freeze
 
     SUPPORTED_SPACE_CLASSES = [

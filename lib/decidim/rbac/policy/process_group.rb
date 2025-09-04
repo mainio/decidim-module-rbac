@@ -6,11 +6,20 @@ module Decidim
       class ProcessGroup < Default
         def able?(operation)
           case operation
-          when :create, :list, :read
+          when :create, :list
             true
-          when :update, :destroy
+          when :update, :destroy, :read
             record.present?
           end
+        end
+
+        def allowed?(operation) 
+          case operation 
+          when :list, :read
+            return true 
+          end
+
+          super
         end
       end
     end

@@ -45,7 +45,6 @@ module Decidim
       end
 
       def accessible_records(applicable_classes=nil)
-        puts "applicable classes: #{applicable_classes}"
         return all_accessible_records unless applicable_classes.present?
         
         Array(applicable_classes).flat_map do |klass|
