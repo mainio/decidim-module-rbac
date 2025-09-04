@@ -942,6 +942,7 @@ Decidim::RBAC.define do |reg|
     role.apply :sortitions_admin
     role.apply :surveys_admin
     role.apply :templates_admin
+    role.apply :private_participant
   end
 
   reg.role :user_manager do |role|
@@ -1041,29 +1042,16 @@ Decidim::RBAC.define do |reg|
     end
   end
 
-  # === Member roles ===
-  reg.role :assembly_member do |role|
+  # # === Member roles ===
+  reg.role :private_participant do |role|
     # decidim-assemblies
     role.resource :assembly do |res|
       res.operation :read
       res.operation :list
     end
 
-    # should be `assembly_members`
-    role.resource :members do |res|
-      res.operation :list
-    end
-  end
-
-  reg.role :process_member do |role|
-    # decidim-participatory_processes
     role.resource :process do |res|
       res.operation :read
-      res.operation :list
-    end
-
-    # should be `process_members`
-    role.resource :members do |res|
       res.operation :list
     end
   end
@@ -1226,12 +1214,12 @@ Decidim::RBAC.define do |reg|
   reg.role :visitor do |role|
     # decidim-assemblies
     role.resource :assembly do |res|
-      res.operation :read_public
+      res.operation :read
     end
 
     # should be `assembly_members`
     role.resource :members do |res|
-      res.operation :list_public
+      res.operation :list
     end
 
     role.resource :participatory_space do |res|
@@ -1240,18 +1228,18 @@ Decidim::RBAC.define do |reg|
 
     # decidim-core
     role.resource :component do |res|
-      res.operation :read_public
+      res.operation :read
     end
 
     # decidim-debates
     role.resource :debate do |res|
       res.operation :embed
-      res.operation :read_public
+      res.operation :read
     end
 
     # decidim-forms
     role.resource :questionnaire do |res|
-      res.operation :answer_public
+      res.operation :answer
     end
 
     # decidim-meetings
@@ -1261,22 +1249,22 @@ Decidim::RBAC.define do |reg|
 
     # decidim-participatory_processes
     role.resource :process do |res|
-      res.operation :list_public
-      res.operation :read_public
+      res.operation :list
+      res.operation :read
     end
 
     role.resource :process_group do |res|
-      res.operation :list_public
-      res.operation :read_public
+      res.operation :list
+      res.operation :read
     end
 
     role.resource :process_step do |res|
-      res.operation :read_public
+      res.operation :read
     end
 
     # should be `process` -> `list_public`
     role.resource :process_list do |res|
-      res.operation :read_public
+      res.operation :read
     end
 
     # decidim-proposals
@@ -1287,7 +1275,7 @@ Decidim::RBAC.define do |reg|
     # decidim-sortitions
     role.resource :sortition do |res|
       res.operation :embed
-      res.operation :read_public
+      res.operation :read
     end
   end
 
@@ -1295,14 +1283,6 @@ Decidim::RBAC.define do |reg|
   reg.role :collaborator do |role|
     role.resource :assembly_list do |res|
       res.operation :admin_read
-    end
-
-    role.resource :comment do |res|
-      res.operation :read
-      res.operation :create
-      res.operation :update
-      res.operation :destroy
-      res.operation :vote
     end
 
     role.resource :process_list do |res|
