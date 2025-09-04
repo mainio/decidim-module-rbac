@@ -1168,7 +1168,7 @@ Decidim::RBAC.define do |reg|
     end
   end
 
-  reg.role :proposal_author do |role|
+  reg.role :author do |role|
     # decidim-proposals
     role.resource :proposal do |res|
       res.operation :edit
