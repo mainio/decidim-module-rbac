@@ -101,6 +101,9 @@ namespace :decidim_rbac do
             # TODO
           when :valuator
             # TODO
+
+          when :private_user
+            # ParticipatorySpacePrivateUser
           end
 
           participatory_process

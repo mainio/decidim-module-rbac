@@ -11,11 +11,11 @@ module Decidim
           when :read, :list, :admin_read, :admin_list, :admin_create, :admin_import
             true
           when :admin_preview, :admin_update, :admin_publish
-            record.present?
+            @record.present?
           when :admin_soft_delete, :admin_destroy
             return false unless record.respond_to?(:deleted?)
 
-            !record.deleted?
+            !@record.deleted?
           when :admin_restore
             return false unless record.respond_to?(:deleted?)
 
@@ -28,11 +28,11 @@ module Decidim
         def allowed?(operation)
           case operation
           when :read
-            return true if record.published?
+            return true if record.published? && !record.private_space?
             return true if user_can_preview_space?
+            return false unless accessible_spaces.include?(record)
           when :list
-            @record ||= 
-              subject.accessible_records("Decidim::ParticipatoryProcess")
+            @record ||= accessible_spaces
           end
 
           super
@@ -50,6 +50,10 @@ module Decidim
           Decidim::ShareToken.use!(token_for: record, token: share_token, user: subject)
         rescue ActiveRecord::RecordNotFound, StandardError
           false
+        end
+
+        def accessible_spaces
+          subject.accessible_records("Decidim::ParticipatoryProcess")
         end
       end
     end
