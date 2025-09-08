@@ -20,14 +20,14 @@ module Decidim
             current_settings&.creation_enabled? &&
               component_settings&.official_proposals_enabled
           when :edit
-            record && record.editable_by?(subject)
+            record.present?
           when :admin_edit
             return false unless record
             return false unless record.official? || record.official_meeting?
 
             record.votes.empty?
           when :withdraw, :admin_withdraw
-            record && record.authored_by?(subject)
+            record.present?
           when :amend
             # TODO: Authorization check
             record && current_settings&.amendments_enabled?
@@ -50,6 +50,7 @@ module Decidim
 
             !proposal.hidden
           else
+
             super
           end
         end

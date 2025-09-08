@@ -28,7 +28,8 @@ module Decidim
         # Check permissions within all these records as the user may have given
         # different roles within these contexts.
         expanded_records = records.flat_map do |record|
-          [record,
+          [
+            record,
             (record.respond_to?(:component) ? record.component : nil),
             (record.respond_to?(:participatory_space) ? record.participatory_space : nil),
             (record.respond_to?(:organization) ? record.organization : nil)

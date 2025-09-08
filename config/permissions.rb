@@ -1168,12 +1168,8 @@ Decidim::RBAC.define do |reg|
     end
   end
 
-  reg.role :author do |role|
-    # decidim-proposals
-    role.resource :proposal do |res|
-      res.operation :edit
-      res.operation :withdraw
-    end
+  reg.role :proposal_author do |role|
+    role.apply :proposals_author
   end
 
   reg.role :collaborative_draft_author do |role|

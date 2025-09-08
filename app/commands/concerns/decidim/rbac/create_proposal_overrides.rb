@@ -30,7 +30,7 @@ module Decidim
           with_events(with_transaction: true) do
             create_proposal
             create_attachments(first_weight: first_attachment_weight) if process_attachments?
-            create_permission_role(@proposal, @current_user, "author")
+            create_permission_role(@proposal, @current_user, "proposal_author")
           end
 
           broadcast(:ok, proposal)
