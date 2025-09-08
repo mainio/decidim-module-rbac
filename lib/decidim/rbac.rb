@@ -12,6 +12,7 @@ module Decidim
     autoload :Role, "decidim/rbac/role"
     autoload :Policy, "decidim/rbac/policy"
     autoload :NeedsPermission, "decidim/rbac/needs_permission"
+    autoload :PermissionLoader, "decidim/rbac/permission_loader"
 
     PRIVILAGED_ROLES = [
       "collaborator",
