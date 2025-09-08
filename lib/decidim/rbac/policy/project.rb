@@ -5,7 +5,7 @@ module Decidim
     module Policy
       # Budgets project
       class Project < Default
-        context_reader :workflow, :budget
+        context_reader :workflow, :budget, :order, :project
 
         # rubocop:disable Metrics/CyclomaticComplexity
         def able?(operation)
@@ -32,6 +32,19 @@ module Decidim
           end
         end
         # rubocop:enable Metrics/CyclomaticComplexity
+
+        def allowed?(operation)
+          case operation
+          when :vote
+            return can_vote_project?(project || order&.projects&.first)
+          end
+
+          super
+        end
+
+        def can_vote_project?(a_project)
+          a_project.present?
+        end
       end
     end
   end

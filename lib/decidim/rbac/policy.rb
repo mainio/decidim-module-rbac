@@ -58,6 +58,7 @@ module Decidim
       autoload :ProcessList, "decidim/rbac/policy/process_list"
       autoload :ProcessStep, "decidim/rbac/policy/process_step"
       autoload :Process, "decidim/rbac/policy/process"
+      autoload :Project, "decidim/rbac/policy/project"
       autoload :ProjectSelected, "decidim/rbac/policy/project_selected"
       autoload :ProjectTaxonomy, "decidim/rbac/policy/project_taxonomy"
       autoload :Proposal, "decidim/rbac/policy/proposal"
