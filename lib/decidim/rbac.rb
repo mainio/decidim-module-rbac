@@ -16,7 +16,6 @@ module Decidim
 
     PRIVILAGED_ROLES = [
       "collaborator",
-      "valuator",
       "moderator",
       "user_manager",
       "evaluator",

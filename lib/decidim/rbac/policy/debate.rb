@@ -11,16 +11,14 @@ module Decidim
           case operation
           when :create
             # TODO: authorization check
-            current_settings&.creation_enabled? && component.participatory_space.can_participate?(subject)
-          when :read
-            !record.hidden?
+            current_settings&.creation_enabled?
           when :edit
-            record&.editable_by?(subject)
+            record.present?
           when :like
-            !record.closed?
+            record.present?
           when :close
-            record&.closeable_by?(subject)
-          when :report, :export, :admin_create, :admin_read, :admin_export
+            record.present?
+          when :read, :report, :export, :admin_create, :admin_read, :admin_export
             true
           when :admin_update
             record && !record.closed? && record.official?
@@ -31,6 +29,33 @@ module Decidim
           end
         end
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+        def allowed?(operation)
+          case operation
+          when :read
+            return true if super(:admin_read)
+
+            return true if !record.hidden?
+          end
+
+          super
+        end
+
+        private
+
+        def component
+          @component ||= begin
+            if respond_to?(:component)
+              component
+            elsif record && record.respond_to?(:component)
+              record.component
+            elsif within.is_a?(Decidim::Component)
+              within
+            elsif within.respond_to?(:component)
+              within.component
+            end
+          end
+        end
       end
     end
   end

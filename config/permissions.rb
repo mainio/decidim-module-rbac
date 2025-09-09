@@ -567,12 +567,9 @@ Decidim::RBAC.define do |reg|
   # decidim-debates
   reg.group :debates do |group|
     group.resource :debate do |res|
-      res.operation :close
       res.operation :create
-      res.operation :delete
-      res.operation :edit
       res.operation :read
-      res.operation :update
+      res.operation :like
     end
   end
 
@@ -1152,6 +1149,7 @@ Decidim::RBAC.define do |reg|
     role.resource :debate do |res|
       res.operation :close
       res.operation :edit
+      res.operation :update
     end
   end
 
