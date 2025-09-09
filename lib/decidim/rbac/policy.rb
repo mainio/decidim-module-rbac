@@ -23,6 +23,7 @@ module Decidim
       autoload :Budget, "decidim/rbac/policy/budget"
       autoload :BulkUpdate, "decidim/rbac/policy/bulk_update"
       autoload :CollaborativeText, "decidim/rbac/policy/collaborative_text"
+      autoload :CollaborativeDraft, "decidim/rbac/policy/collaborative_draft"
       autoload :Comment, "decidim/rbac/policy/comment"
       autoload :ComponentData, "decidim/rbac/policy/component_data"
       autoload :Component, "decidim/rbac/policy/component"

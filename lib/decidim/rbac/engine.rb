@@ -51,6 +51,10 @@ module Decidim
           Decidim::Admin::ModerationStats.include(Decidim::RBAC::ModerationStatsOverrides)
           # Commands 
           Decidim::Proposals::CreateProposal.include(Decidim::RBAC::CreateProposalOverrides)
+          Decidim::Proposals::CreateCollaborativeDraft.include(Decidim::RBAC::CreateCollaborativeDraftOverrides)
+          Decidim::Proposals::AcceptAccessToCollaborativeDraft.include(
+            Decidim::RBAC::AcceptAccessToCollaborativeDraftOverrides
+          )
         end
       end
     end

@@ -28,9 +28,10 @@ module Decidim
         def allowed?(operation)
           case operation
           when :read
-            return true if record.published? && !record.private_space?
+            return true if participatory_space.published? && !participatory_space.private_space?
+            return false unless @subject.present?
             return true if user_can_preview_space?
-            return false unless accessible_spaces.include?(record)
+            return false unless accessible_spaces.include?(participatory_space)
           when :list
             @record ||= accessible_spaces
           end
@@ -40,8 +41,11 @@ module Decidim
 
         private
 
-        def record
-          @record ||= current_participatory_space
+        def participatory_space
+          @participatory_space ||= 
+            current_participatory_space ||
+            (within if within.is_a?(Decidim::ParticipatoryProcess) || within.is_a?(Decidim::Assembly)) ||
+            within&.participatory_space
         end
 
         def user_can_preview_space?

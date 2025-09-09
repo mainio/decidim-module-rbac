@@ -788,6 +788,13 @@ Decidim::RBAC.define do |reg|
     end
   end
 
+  reg.group :collaborative_drafts do |group|
+    group.resource :collaborative_draft do |res|
+      res.operation :create
+      res.operation :request_access
+    end
+  end
+
   reg.group :proposals_admin do |group|
     group.resource :proposal do |res|
       res.operation :admin_read
@@ -825,6 +832,15 @@ Decidim::RBAC.define do |reg|
       res.operation :withdraw
     end
   end
+
+  reg.group :collaborative_drafts_author do |group|
+    group.resource :collaborative_draft do |res|
+      res.operation :edit
+      res.operation :publish
+      res.operation :react_to_request_access
+    end
+  end
+
 
   # decidim-sortitions
   reg.group :sortitions_admin do |group|
@@ -1044,16 +1060,7 @@ Decidim::RBAC.define do |reg|
 
   # # === Member roles ===
   reg.role :private_participant do |role|
-    # decidim-assemblies
-    role.resource :assembly do |res|
-      res.operation :read
-      res.operation :list
-    end
-
-    role.resource :process do |res|
-      res.operation :read
-      res.operation :list
-    end
+    role.apply :participant
   end
 
   # === Participant roles ===
@@ -1069,6 +1076,7 @@ Decidim::RBAC.define do |reg|
     role.apply :debates
     role.apply :meetings
     role.apply :proposals
+    role.apply :collaborative_drafts
     role.apply :surveys
 
     # Participatory spaces
@@ -1174,11 +1182,7 @@ Decidim::RBAC.define do |reg|
 
   reg.role :collaborative_draft_author do |role|
     # decidim-proposals
-    role.resource :collaborative_draft do |res|
-      res.operation :edit
-      res.operation :publish
-      res.operation :react_to_request_access
-    end
+    role.apply :collaborative_drafts_author
   end
 
   # Groups will be gone in 0.31.0
