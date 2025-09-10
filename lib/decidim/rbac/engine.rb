@@ -34,9 +34,9 @@ module Decidim
            author.assign_role!("collaborative_draft_author" ,collaborative_draft)
         end
 
-        ActiveSupport::Notifications.subscribe("decidim.events.debates.create_debate:after") do |_event_name, data|
+        ActiveSupport::Notifications.subscribe("decidim.events.debates.debate_created") do |_event_name, data|
           debate = data[:resource]
-          author = data[:event_author]
+          author = debate.author
 
            author.assign_role!("debate_author" ,debate)
         end
