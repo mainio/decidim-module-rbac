@@ -5,23 +5,42 @@ module Decidim
     class Engine < ::Rails::Engine
       isolate_namespace Decidim::RBAC
 
-      # rubocop:disable Lint/UselessAssignment
       initializer "decidim_rbac.events" do
         ActiveSupport::Notifications.subscribe("decidim.proposals.create_proposal:after") do |_event_name, data|
           proposal = data[:resource]
           author = data[:extra][:event_author]
 
-          # TODO: Assign the coauthor role
+          author.assign_role!("proposal_author" ,proposal)
         end
 
         ActiveSupport::Notifications.subscribe("decidim.events.proposals.accepted_coauthorship") do |_event_name, data|
           proposal = data[:resource]
           author = data[:affected_users].first
 
-          # TODO: Assign the coauthor role
+           author.assign_role!("proposal_author" ,proposal)
+        end
+
+        ActiveSupport::Notifications.subscribe("decidim.proposals.create_collaborative_draft:after") do |_event_name, data|
+          collaborative_draft = data[:resource]
+          author = data[:extra][:event_author]
+
+           author.assign_role!("collaborative_draft_author" ,collaborative_draft)
+        end
+
+        ActiveSupport::Notifications.subscribe("decidim.events.proposals.collaborative_draft_access_requester_accepted") do |_event_name, data|
+          collaborative_draft = data[:resource]
+          author = data[:affected_users].first
+
+           author.assign_role!("collaborative_draft_author" ,collaborative_draft)
+        end
+
+        ActiveSupport::Notifications.subscribe("decidim.events.debates.create_debate:after") do |_event_name, data|
+          debate = data[:resource]
+          author = data[:event_author]
+
+           author.assign_role!("debate_author" ,debate)
         end
       end
-      # rubocop:enable Lint/UselessAssignment
 
       initializer "decidim_rbac.permissions" do
         next unless defined?(Rails)
@@ -49,12 +68,6 @@ module Decidim
           Decidim::ParticipatoryProcessesWithUserRole.include(Decidim::RBAC::ParticipatoryProcessesWithUserRoleOverrides)
           Decidim::Assemblies::AssembliesWithUserRole.include(Decidim::RBAC::AssembliesWithUserRoleOverrides)
           Decidim::Admin::ModerationStats.include(Decidim::RBAC::ModerationStatsOverrides)
-          # Commands 
-          Decidim::Proposals::CreateProposal.include(Decidim::RBAC::CreateProposalOverrides)
-          Decidim::Proposals::CreateCollaborativeDraft.include(Decidim::RBAC::CreateCollaborativeDraftOverrides)
-          Decidim::Proposals::AcceptAccessToCollaborativeDraft.include(
-            Decidim::RBAC::AcceptAccessToCollaborativeDraftOverrides
-          )
         end
       end
     end

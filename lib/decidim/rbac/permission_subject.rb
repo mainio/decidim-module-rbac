@@ -39,10 +39,11 @@ module Decidim
         permission_role_assignments.where(record: expanded_records.compact.uniq).permissions
       end
 
-      def assign_role!(role, resource: nil)
-        return if permission_role_assignments.find_by(key: role, resource: resource || organization).present?
-
-        permission_role_assignments.create!(key: role, resource: resource || organization)
+      def assign_role!(role, resource)
+        permission_role_assignments.find_or_create_by!(
+          role: role,
+          record: resource
+        )
       end
 
       def accessible_records(applicable_classes=nil)
