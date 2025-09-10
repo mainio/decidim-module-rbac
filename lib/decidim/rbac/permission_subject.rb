@@ -46,6 +46,11 @@ module Decidim
         )
       end
 
+      def unassign_role!(role, resource)
+        assignment = permission_role_assignments.find_by(role: role, record: resource)
+          assignment.destroy! if assignment
+      end
+
       def accessible_records(applicable_classes=nil)
         return all_accessible_records unless applicable_classes.present?
         
