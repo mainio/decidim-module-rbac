@@ -10,7 +10,8 @@ module Decidim
         pluck(:role)
       end
 
-      def self.permissions
+      def self.permissions(roles=nil)
+        roles ||= self.roles
         return {} if roles.empty?
 
         role_permissions = Decidim::RBAC.registry.roles(*roles)
