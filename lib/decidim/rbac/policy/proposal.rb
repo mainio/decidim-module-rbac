@@ -27,7 +27,7 @@ module Decidim
 
             record.votes.empty?
           when :withdraw, :admin_withdraw
-            record.present?
+            record && !record.withdrawn?
           when :amend
             # TODO: Authorization check
             record && current_settings&.amendments_enabled?

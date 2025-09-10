@@ -835,6 +835,7 @@ Decidim::RBAC.define do |reg|
       res.operation :edit
       res.operation :publish
       res.operation :react_to_request_access
+      res.operation :withdraw
     end
   end
 

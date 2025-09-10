@@ -10,10 +10,14 @@ module Decidim
           return false unless collaborative_drafts_enabled?
 
           case operation
-          when :react_to_request_access, :request_access, :publish, :edit
+          when :react_to_request_access, :publish, :edit
             collaborative_draft&.open?
+          when :request_access
+            collaborative_draft&.open? && can_request_access_collaborative_draft?
           when :create
             component&.current_settings&.creation_enabled? # TODO: authorization check
+          when :withdraw
+            collaborative_draft && !collaborative_draft.withdrawn?
           else
             false
           end
@@ -45,6 +49,12 @@ module Decidim
               resource.component
             end
           end
+        end
+
+        def can_request_access_collaborative_draft?
+          return false unless subject.present?
+
+          !collaborative_draft.requesters.include?(subject)
         end
       end
     end
