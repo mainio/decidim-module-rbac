@@ -4,7 +4,7 @@ module Decidim
   module RBAC
     module Policy
       class Blogpost < Default
-        context_reader :current_component, :component_settings
+        context_reader :blogpost
 
         # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def able?(operation)
@@ -26,27 +26,36 @@ module Decidim
 
             record.visible?
           when :create
-            can_create_post?
+            can_manage_post?
           when :update, :destroy
-            return false if record.blank?
-            return false unless record.author.is_a?(Decidim::User)
-            return false unless can_create_post?
+            return false unless record.present?
 
-            record.author == subject
+            can_manage_post?
           else
             # :admin_read, :admin_create, :admin_manage_trash
             true
           end
         end
+
+        def allowed?(operation)
+          case operation
+          when :update, :destroy
+            return false unless subject.present?
+            
+            @record ||= blogpost
+          end
+
+          super
+        end
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 
-        def can_create_post?
-          return false unless current_component&.participatory_space&.published?
-          return false unless current_component&.published?
+        def can_manage_post?
+          return false unless component&.participatory_space&.published?
+          return false unless component&.published?
 
-          creation_enabled_for_participants? || initiative_authorship?
+          creation_enabled_for_participants?
         end
 
         def admin_can_manage?
@@ -64,16 +73,9 @@ module Decidim
         end
 
         def creation_enabled_for_participants?
-          component_settings&.creation_enabled_for_participants? &&
-            current_component&.participatory_space&.can_participate?(subject)
-        end
+          return false unless component.present?
 
-        def initiative_authorship?
-          return false unless Decidim.module_installed?("initiatives")
-          return false unless subject
-
-          current_component&.participatory_space.is_a?(Decidim::Initiative) &&
-            current_component&.participatory_space&.has_authorship?(subject)
+          component.settings&.creation_enabled_for_participants?
         end
       end
     end

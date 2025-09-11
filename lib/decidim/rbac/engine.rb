@@ -40,6 +40,13 @@ module Decidim
 
            author.assign_role!("debate_author" ,debate)
         end
+
+        ActiveSupport::Notifications.subscribe("decidim.events.blogs.post_created") do |_event_name, data|
+          debate = data[:resource]
+          author = debate.author
+
+           author.assign_role!("blog_author" ,debate)
+        end
       end
 
       initializer "decidim_rbac.permissions" do

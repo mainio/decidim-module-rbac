@@ -381,6 +381,11 @@ Decidim::RBAC.define do |reg|
     group.resource :blogpost do |res|
       res.operation :read
       res.operation :create
+    end
+  end
+
+  reg.group :blogs_author do |group|
+    group.resource :blogpost do |res|
       res.operation :update
       res.operation :destroy
     end
@@ -1177,6 +1182,10 @@ Decidim::RBAC.define do |reg|
 
   reg.role :proposal_author do |role|
     role.apply :proposals_author
+  end
+
+  reg.role :blog_author do |role|
+    role.apply :blogs_author
   end
 
   reg.role :collaborative_draft_author do |role|

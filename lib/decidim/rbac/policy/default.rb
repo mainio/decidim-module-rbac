@@ -70,8 +70,14 @@ module Decidim
 
         attr_reader :record, :subject, :within
 
-        def has_permission?(operation)
-          operations = permissions[resource_key]
+        # def has_permission?(operation)
+        #   operations = permissions[resource_key]
+        #   return false unless operations
+
+        #   operations.include?(operation)
+        # end
+        def has_permission?(operation, key = resource_key)
+          operations = permissions[key]
           return false unless operations
 
           operations.include?(operation)
@@ -102,6 +108,22 @@ module Decidim
             result << item.component if item.respond_to?(:component)
             result
           end.uniq
+        end
+
+        def component
+          @component ||= begin
+            if respond_to?(:component)
+              component
+            elsif record && record.is_a?(Decidim::Component)
+              record
+            elsif record && record.respond_to?(:component)
+              record.component
+            elsif within && within.is_a?(Decidim::Component)
+              within
+            elsif within.respond_to?(:component)
+              within.component
+            end
+          end
         end
       end
     end

@@ -8,7 +8,12 @@ module Decidim
 
         def able?(operation)
           case operation
-          when :read, :list, :admin_read, :admin_list, :admin_create, :admin_import
+          when :read
+            return true if participatory_space.published? && !participatory_space.private_space?
+            return true if user_can_preview_space?
+            
+            @subject.present?
+          when :list, :admin_read, :admin_list, :admin_create, :admin_import
             true
           when :admin_preview, :admin_update, :admin_publish
             @record.present?
@@ -27,11 +32,6 @@ module Decidim
 
         def allowed?(operation)
           case operation
-          when :read
-            return true if participatory_space.published? && !participatory_space.private_space?
-            return false unless @subject.present?
-            return true if user_can_preview_space?
-            return false unless accessible_spaces.include?(participatory_space)
           when :list
             @record ||= accessible_spaces
           end

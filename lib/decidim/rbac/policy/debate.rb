@@ -40,22 +40,6 @@ module Decidim
 
           super
         end
-
-        private
-
-        def component
-          @component ||= begin
-            if respond_to?(:component)
-              component
-            elsif record && record.respond_to?(:component)
-              record.component
-            elsif within.is_a?(Decidim::Component)
-              within
-            elsif within.respond_to?(:component)
-              within.component
-            end
-          end
-        end
       end
     end
   end
