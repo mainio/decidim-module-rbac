@@ -39,18 +39,6 @@ module Decidim
           component.settings.collaborative_drafts_enabled
         end
 
-        def component
-          @component ||= begin
-            resource = (within || record)
-
-            if resource.is_a?(::Decidim::Component)
-              resource
-            elsif resource.respond_to?(:component)
-              resource.component
-            end
-          end
-        end
-
         def can_request_access_collaborative_draft?
           return false unless subject.present?
 

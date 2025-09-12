@@ -33,22 +33,16 @@ module Decidim
         def allowed?(operation)
           case operation
           when :list
-            @record ||= accessible_spaces
+            @record = accessible_spaces
           when :read
-            @record ||= participatory_space
+            @record = participatory_space
+            @fallback = false if participatory_space.private_space?
           end
 
           super
         end
 
         private
-
-        def participatory_space
-          @participatory_space ||= 
-            current_participatory_space ||
-            (within if within.is_a?(Decidim::ParticipatoryProcess) || within.is_a?(Decidim::Assembly)) ||
-            within&.participatory_space
-        end
 
         def user_can_preview_space?
           return false if share_token.blank?

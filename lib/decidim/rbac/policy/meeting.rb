@@ -50,12 +50,6 @@ module Decidim
           end
           super
         end
-
-        private
-
-        def participatory_space
-          @participatory_space ||= current_component.participatory_space
-        end
       end
     end
   end

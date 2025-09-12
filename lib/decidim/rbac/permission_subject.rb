@@ -24,40 +24,24 @@ module Decidim
         # has_many :permission_roles, through: :permission_role_assignments
       end
 
-      # def permissions_within(records)
-      #   # Check permissions within all these records as the user may have given
-      #   # different roles within these contexts.
-      #   expanded_records = records.flat_map do |record|
-      #     [
-      #       record,
-      #       (record.respond_to?(:component) ? record.component : nil),
-      #       (record.respond_to?(:participatory_space) ? record.participatory_space : nil),
-      #       (record.respond_to?(:organization) ? record.organization : nil)
-      #     ]
-      #   end
+      def permissions_within(record, fallback)
+        # Check permissions within extended records if the permission should fallback is true.
+        records = if fallback 
+                    expanded_records(record)
+                  else
+                    Array(record)
+                  end
 
-      #   permission_role_assignments.where(record: expanded_records.compact.uniq).permissions
-      # end
-      def permissions_within(records)
-        # Check permissions within all these records as the user may have given
-        # different roles within these contexts.
-        expanded_records = records.flat_map do |record|
-          [
-            record,
-            (record.respond_to?(:component) ? record.component : nil),
-            (record.respond_to?(:participatory_space) ? record.participatory_space : nil),
-            (record.respond_to?(:organization) ? record.organization : nil)
-          ]
-        end
+        permission_role_assignments.where(record: records).permissions
+      end
 
-        assignments = permission_role_assignments.where(record: expanded_records.compact.uniq)
-        assignments.each do |assignment|
-          puts "ROLE: #{assignment.role}"
-          puts "RECORD: #{assignment.record_type}##{assignment.record_id}"
-          permissions = Decidim::RBAC::PermissionRoleAssignment.permissions(Array(assignment.role))
-          puts "PERMISSIONS:"
-          puts permissions.inspect
-        end
+      def expanded_records(record)
+        [
+          record,
+          (record.respond_to?(:component) ? record.component : nil),
+          (record.respond_to?(:participatory_space) ? record.participatory_space : nil),
+          (record.respond_to?(:organization) ? record.organization : nil)
+        ].compact.uniq
       end
 
       def assign_role!(role, resource)

@@ -13,8 +13,7 @@ module Decidim
 
           RBAC.policy(:admin_dashboard).new(
             record:,
-            subject: user,
-            within: organization,
+            subject: user
 
           ).apply(:admin_read)
         end

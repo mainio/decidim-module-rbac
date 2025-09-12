@@ -58,15 +58,12 @@ module Decidim
           record = extra_context[:record] || extra_context[:resource] || extra_context[:commentable] ||extra_context[:reportable]
           record ||= extra_context[permission] if permission.is_a?(Symbol)
           record ||= extra_context[:trashable_deleted_resource] if extra_context.has_key?(:trashable_deleted_resource) && [:restore, :soft_delete, :read].include?(operation)
-          within = record || try(:current_component) || try(:current_participatory_space) || try(:current_organization)
 
           raise Decidim::ActionForbidden,
             "Forbidden: operation=#{operation.inspect}, permission=#{permission.inspect}, \n" \
-            "within: #{within&.class&.name} ID: #{within&.id}\n"\
             "record: #{record&.class&.name} ID: #{record&.id}\n"\
             "context=#{extra_context.inspect}, scope=#{permission_scope.inspect}, \n" \
             "policy class #{RBAC.policy(record)}\n" \
-            "within: #{try(:current_component) || try(:current_participatory_space) || try(:current_organization)} \n"\
             "user=#{current_user&.id || 'nil'}\n"
         end
         # raise Decidim::ActionForbidden unless allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
@@ -82,8 +79,7 @@ module Decidim
         record ||= extra_context[:trashable_deleted_resource] if extra_context.has_key?(:trashable_deleted_resource) && [:restore, :soft_delete].include?(operation)
         # Try would not necessarily return the expected result, since some of the methods that are being called are lazier than others
         # (i.e current_participatory_space compared to current organization).
-        # within = record || try(:current_component) || try(:current_participatory_space) || try(:current_organization)
-        within = record ||
+       record ||=
           permissions_context[:current_participatory_process] ||
           permissions_context[:current_component] ||
           permissions_context[:current_participatory_space] ||
@@ -92,7 +88,6 @@ module Decidim
         policy = RBAC.policy(resource).new(
           record: record,
           subject: subject,
-          within: within,
           **permissions_context.merge(extra_context)
         )
 
@@ -104,7 +99,6 @@ module Decidim
             puts "Resource #{resource}"
             puts "admin_#{operation}"
             puts "POLICY #{policy.class.name}"
-            puts "WITHIN: #{within&.class&.name} ##{within&.id}"
             puts "record: #{record&.class&.name}"
             puts "subject: #{subject.id}"
             puts policy.apply(:"admin_#{operation}").inspect
@@ -117,7 +111,6 @@ module Decidim
           puts "Resource #{resource}"
           puts "admin_#{operation}"
           puts "POLICY #{policy.class.name}"
-          puts "WITHIN: #{within&.class&.name} ##{within&.id}"
           puts "record: #{record&.class&.name}"
           puts "subject: #{subject.id}"
           puts policy.apply(:"admin_#{operation}").inspect

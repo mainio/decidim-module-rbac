@@ -22,10 +22,11 @@ module Decidim
           end
         end
 
-        def initialize(record:, subject: nil, within:, **attributes)
+        def initialize(record:, subject: nil, fallback: true, **attributes)
           @record = record
           @subject = subject
-          @within = within
+          @fallback = fallback
+          @cascade_permissions = true
           self.class.context_readers.each do |name, varname|
             instance_variable_set("@#{varname}", attributes.fetch(name, nil))
           end
@@ -68,16 +69,10 @@ module Decidim
 
         private
 
-        attr_reader :record, :subject, :within
+        attr_reader :record, :subject, :fallback
 
-        # def has_permission?(operation)
-        #   operations = permissions[resource_key]
-        #   return false unless operations
-
-        #   operations.include?(operation)
-        # end
-        def has_permission?(operation, key = resource_key)
-          operations = permissions[key]
+        def has_permission?(operation)
+          operations = permissions[resource_key]
           return false unless operations
 
           operations.include?(operation)
@@ -90,7 +85,7 @@ module Decidim
         def permissions
           @permissions ||=
             if subject.present?
-              subject.permissions_within(record_with_contexts)
+              subject.permissions_within(record, fallback)
             else
               Decidim::RBAC.registry.role(:visitor).permissions
             end
@@ -100,28 +95,26 @@ module Decidim
           [:read, :admin_read].include?(operation)
         end
 
-        def record_with_contexts
-          (Array(record) + Array(within)).compact.flat_map do |item|
-            result = [item]
-            result << item.participatory_space if item.respond_to?(:participatory_space)
-            result << item.organization if item.respond_to?(:organization)
-            result << item.component if item.respond_to?(:component)
-            result
-          end.uniq
-        end
 
         def component
           @component ||= begin
             if respond_to?(:component)
               component
-            elsif record && record.is_a?(Decidim::Component)
+            elsif record.is_a?(Decidim::Component)
               record
-            elsif record && record.respond_to?(:component)
+            elsif record.respond_to?(:component)
               record.component
-            elsif within && within.is_a?(Decidim::Component)
-              within
-            elsif within.respond_to?(:component)
-              within.component
+            end
+          end
+        end
+
+        def participatory_space
+          @participatory_space ||= begin
+            if respond_to?(:current_participatory_space)
+            elsif record.is_a?(Decidim::ParticipatoryProcess)
+              record
+            elsif record.respond_to?(:participatory_space)
+              record.participatory_space
             end
           end
         end
