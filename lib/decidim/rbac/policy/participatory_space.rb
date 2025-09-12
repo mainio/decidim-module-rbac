@@ -9,7 +9,7 @@ module Decidim
         def able?(operation)
           case operation
           when :read
-            return true if participatory_space.published? && !participatory_space.private_space?
+            # return true if participatory_space.published? && !participatory_space.private_space?
             return true if user_can_preview_space?
             
             @subject.present?
@@ -34,6 +34,8 @@ module Decidim
           case operation
           when :list
             @record ||= accessible_spaces
+          when :read
+            @record ||= participatory_space
           end
 
           super

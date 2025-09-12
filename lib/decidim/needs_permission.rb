@@ -99,7 +99,7 @@ module Decidim
         # Ideally in the permission checks, we should already check against the
         # admin operations instead of providing the separate scope.
         if scope == :admin || permission_scope == :admin
-          if policy.class.name == "Decidim::RBAC::Policy::Moderation" && operation == :unhide
+          # if policy.class.name == "Decidim::RBAC::Policy::Moderation" && operation == :unhide
             puts "-*-*-*-*-*-*" * 50
             puts "Resource #{resource}"
             puts "admin_#{operation}"
@@ -109,10 +109,19 @@ module Decidim
             puts "subject: #{subject.id}"
             puts policy.apply(:"admin_#{operation}").inspect
             puts "-*-*-*-*-*-*" * 50
-          end
+          # end
           
           policy.apply(:"admin_#{operation}")
         else
+          puts "-*-*-*-*-*-*" * 50
+          puts "Resource #{resource}"
+          puts "admin_#{operation}"
+          puts "POLICY #{policy.class.name}"
+          puts "WITHIN: #{within&.class&.name} ##{within&.id}"
+          puts "record: #{record&.class&.name}"
+          puts "subject: #{subject.id}"
+          puts policy.apply(:"admin_#{operation}").inspect
+          puts "-*-*-*-*-*-*" * 50
           policy.apply(operation.to_sym)
         end
       rescue Decidim::PermissionAction::PermissionNotSetError

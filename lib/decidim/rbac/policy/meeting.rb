@@ -4,13 +4,13 @@ module Decidim
   module RBAC
     module Policy
       class Meeting < Default
-        context_reader :component_settings, :current_component
+        context_reader :meeting
 
         # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def able?(operation)
-          return admin_able?(operation) if operation.start_with?("admin_")
-
           case operation
+          when :read
+            true
           when :join
             # TODO: Authorization check
             record.can_be_joined_by?(subject)
@@ -25,8 +25,6 @@ module Decidim
             record.registrations_enabled? &&
               record.invites.exists?(user: subject)
           when :create
-            return true if initiative_authorship?
-
             component_settings&.creation_enabled_for_participants? &&
               current_component.participatory_space.can_participate?(subject)
           when :update
@@ -45,31 +43,15 @@ module Decidim
         end
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
-        def admin_able?(operation)
+        def allowed?(operation)
           case operation
-          when :admin_close, :admin_copy, :admin_export_registrations, :admin_update, :admin_read_invites
-            record.present?
-          when :admin_invite_attendee
-            record.present? && record.registrations_enabled?
-          when :admin_validate_registration_code
-            record.present? &&
-              record.registrations_enabled? &&
-              record.component.settings.registration_code_enabled
-          when :admin_create
-            true
-          else
-            false
+          when :read
+            return true
           end
+          super
         end
 
         private
-
-        def initiative_authorship?
-          return false unless Decidim.module_installed?("initiatives")
-
-          participatory_space.is_a?(Decidim::Initiative) &&
-            participatory_space.has_authorship?(subject)
-        end
 
         def participatory_space
           @participatory_space ||= current_component.participatory_space

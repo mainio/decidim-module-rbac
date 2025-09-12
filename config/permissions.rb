@@ -1063,7 +1063,34 @@ Decidim::RBAC.define do |reg|
 
   # # === Member roles ===
   reg.role :private_participant do |role|
-    role.apply :participant
+    # General permissions
+    role.apply :core
+
+    # Components
+    role.apply :blogs
+    role.apply :budgets
+    role.apply :collaborative_texts
+    role.apply :comments
+    role.apply :debates
+    role.apply :meetings
+    role.apply :proposals
+    role.apply :collaborative_drafts
+    role.apply :surveys
+
+    # Participatory spaces
+    role.apply :assemblies
+    role.apply :participatory_processes
+
+    role.resource :authorization do |res|
+      res.operation :create
+    end
+
+    # Removed in 0.31.0
+    role.resource :user_group do |res|
+      res.operation :create
+      res.operation :join
+      res.operation :leave
+    end
   end
 
   # === Participant roles ===
