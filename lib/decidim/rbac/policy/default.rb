@@ -69,7 +69,7 @@ module Decidim
 
         private
 
-        attr_reader :record, :subject, :fallback
+        attr_reader :record, :subject
 
         def has_permission?(operation)
           operations = permissions[resource_key]

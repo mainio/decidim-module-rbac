@@ -80,8 +80,8 @@ module Decidim
         # Try would not necessarily return the expected result, since some of the methods that are being called are lazier than others
         # (i.e current_participatory_space compared to current organization).
        record ||=
-          permissions_context[:current_participatory_process] ||
           permissions_context[:current_component] ||
+          permissions_context[:current_participatory_process] ||
           permissions_context[:current_participatory_space] ||
           permissions_context[:current_organization]
 

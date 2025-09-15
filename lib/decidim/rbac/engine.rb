@@ -41,9 +41,16 @@ module Decidim
            author.assign_role!("debate_author" ,debate)
         end
 
+        ActiveSupport::Notifications.subscribe("decidim.events.meetings.meeting_registration_confirmed") do |_event_name, data|
+          meeting = data[:meeting]
+          user = data[:affected_users].first
+
+           author.assign_role!("meeting_register_owner" ,meeting)
+        end
+
         ActiveSupport::Notifications.subscribe("decidim.events.blogs.post_created") do |_event_name, data|
           debate = data[:resource]
-          author = debate.author
+          author = data[:affected_users].first
 
            author.assign_role!("blog_author" ,debate)
         end
@@ -68,6 +75,8 @@ module Decidim
       end
 
       initializer "decidim_rbac.customizations" do
+        # config.autoload_paths << Rails.root.join("app/queries/concerns")
+        
         config.to_prepare do
           # Models
           Decidim::UserBaseEntity.include(Decidim::RBAC::PermissionSubject)

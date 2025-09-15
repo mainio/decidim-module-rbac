@@ -25,23 +25,24 @@ module Decidim
       end
 
       def permissions_within(record, fallback)
-        # Check permissions within extended records if the permission should fallback is true.
-        records = if fallback 
-                    expanded_records(record)
-                  else
-                    Array(record)
-                  end
+        # Check permissions within extended records if the permission should fallback to organization level
+        records = expanded_records(record, fallback)
 
-        permission_role_assignments.where(record: records).permissions
+        permission_role_assignments.where(record: records).or(
+          where(record: organization, role: "organization_admin")
+        ).permissions
       end
 
       def expanded_records(record)
+        records = 
         [
           record,
           (record.respond_to?(:component) ? record.component : nil),
-          (record.respond_to?(:participatory_space) ? record.participatory_space : nil),
-          (record.respond_to?(:organization) ? record.organization : nil)
-        ].compact.uniq
+          (record.respond_to?(:participatory_space) ? record.participatory_space : nil)
+        ]
+        records.push(record.oranization) if record.respond_to?(:organization)
+
+        records.compact.uniq
       end
 
       def assign_role!(role, resource)

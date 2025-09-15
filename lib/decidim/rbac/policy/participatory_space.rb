@@ -31,12 +31,11 @@ module Decidim
         end
 
         def allowed?(operation)
+          @fallback = false if participatory_space.private_space?
+
           case operation
           when :list
             @record = accessible_spaces
-          when :read
-            @record = participatory_space
-            @fallback = false if participatory_space.private_space?
           end
 
           super

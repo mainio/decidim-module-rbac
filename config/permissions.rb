@@ -591,15 +591,8 @@ Decidim::RBAC.define do |reg|
   # decidim-meetings
   reg.group :meetings do |group|
     group.resource :meeting do |res|
-      res.operation :close
-      res.operation :copy
-      res.operation :create
-      res.operation :destroy
-      res.operation :export_registrations
-      res.operation :invite_attendee
-      res.operation :read_invites
-      res.operation :update
-      res.operation :withdraw
+      res.operation :read
+      res.operation :list
     end
 
     group.resource :response do |res|
@@ -919,6 +912,7 @@ Decidim::RBAC.define do |reg|
     role.apply :collaborative_texts_admin
     role.apply :debates_admin
     role.apply :meetings_admin
+    role.apply :meetings
     role.apply :pages_admin
     role.apply :proposals_admin
     role.apply :sortitions_admin
@@ -938,6 +932,7 @@ Decidim::RBAC.define do |reg|
     role.apply :collaborative_texts_admin
     role.apply :debates_admin
     role.apply :meetings_admin
+    role.apply :meetings
     role.apply :pages_admin
     role.apply :proposals_admin
     role.apply :sortitions_admin
@@ -956,6 +951,7 @@ Decidim::RBAC.define do |reg|
     role.apply :collaborative_texts_admin
     role.apply :debates_admin
     role.apply :meetings_admin
+    role.apply :meetings
     role.apply :pages_admin
     role.apply :proposals_admin
     role.apply :sortitions_admin
