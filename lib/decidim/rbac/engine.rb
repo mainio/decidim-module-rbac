@@ -55,6 +55,12 @@ module Decidim
            author.assign_role!("blog_author" ,debate)
         end
       end
+      
+      initializer "decidim_rbac.add_inflector_active_support" do
+        ActiveSupport::Inflector.inflections(:en) do |inflect|
+          inflect.acronym 'RBAC'
+        end
+      end
 
       initializer "decidim_rbac.permissions" do
         next unless defined?(Rails)
