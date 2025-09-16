@@ -85,7 +85,7 @@ module Decidim
         def permissions
           @permissions ||=
             if subject.present?
-              subject.permissions_within(record, fallback)
+              subject.permissions_within(record, @fallback)
             else
               Decidim::RBAC.registry.role(:visitor).permissions
             end

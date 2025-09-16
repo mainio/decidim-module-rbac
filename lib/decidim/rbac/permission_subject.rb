@@ -29,18 +29,18 @@ module Decidim
         records = expanded_records(record, fallback)
 
         permission_role_assignments.where(record: records).or(
-          where(record: organization, role: "organization_admin")
+          permission_role_assignments.where(record: organization, role: "organization_admin")
         ).permissions
       end
 
-      def expanded_records(record)
+      def expanded_records(record, fallback)
         records = 
         [
           record,
           (record.respond_to?(:component) ? record.component : nil),
           (record.respond_to?(:participatory_space) ? record.participatory_space : nil)
         ]
-        records.push(record.oranization) if record.respond_to?(:organization)
+        records.push(record.oranization) if fallback && record.respond_to?(:organization)
 
         records.compact.uniq
       end

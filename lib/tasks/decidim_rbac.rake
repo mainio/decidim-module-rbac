@@ -69,62 +69,167 @@ namespace :decidim_rbac do
   desc "Creates the initial role assignments after this module is installed."
   task assign_roles: :environment do
     abort "There are already roles created. This task can be only run once after installation." if Decidim::RBAC::PermissionRoleAssignment.any?
-
+    records = []
     Decidim::Organization.find_each do |organization|
       users = Decidim::User
       users = users.entire_collection if users.respond_to?(:entire_collection)
 
-      assignments = users.where(organization: organization, admin: true).map do |user|
-        {
-          subject_type: "Decidim::UserBaseEntity",
+      users.where(organization: organization).map do |user|
+        record = {
           subject_id: user.id,
-          role: "organization_admin",
-          record_type: "Decidim::Organization",
-          record_id: organization.id
+          subject_type: "Decidim::UserBaseEntity",
+          role: "participant",
+          record_id: organization.id,
+          record_type: "Decidim::Organization"
         }
-      end
-
-      Decidim::RBAC::PermissionRoleAssignment.insert_all(assignments)
-    end
-
-    if Decidim.module_installed?(:participatory_processes)
-      # TODO: Add
-      Decidim::ParticipatoryProcess.find_each do |space|
-        Decidim::ParticipatoryProcessUserRole.where(participatory_process: space).find_each do |role|
-          # role.user
-          case role.role.to_sym
-          when :collaborator
-            # TODO: private process users
-          when :admin
-            # TODO
-          when :moderator
-            # TODO
-          when :valuator
-            # TODO
-
-          when :private_user
-            # ParticipatorySpacePrivateUser
-          end
-
-          participatory_process
+        records.push(record)
+        if user.admin?
+          admin_role = record.dup
+          admin_role[:role] = "organization_admin"
+          records.push(admin_role)
         end
       end
     end
 
-    # rubocop:disable Lint/EmptyConditionalBody
+    if Decidim.module_installed?(:participatory_processes)
+      Decidim::ParticipatoryProcessUserRole.find_each do |role|
+        record = {
+          record_id: role.decidim_participatory_process_id,
+          record_type: "Decidim::ParticipatoryProcess",
+          subject_id: role.decidim_user_id,
+          subject_type: "Decidim::UserBaseEntity"
+        }
+        record[:role] = case role.role.to_sym
+        when :collaborator
+          "collaborator"
+        when :admin
+          "process_admin"
+        when :moderator
+          "moderator"
+        when :evaluator
+          "evaluator"
+        end
+        records.push(record)
+      end
+      Decidim::ParticipatoryProcess.where(private_space: true).find_each do |space|
+        space.users.map do |subject|
+          records.push(
+            {
+              record_id: space.id,
+              record_type: "Decidim::ParticipatoryProcess",
+              role: "private_participant",
+              subject_id: subject.id,
+              subject_type: "Decidim::UserBaseEntity"
+            }
+          )
+        end
+      end
+
+      Decidim::ParticipatorySpacePrivateUser.find_each do |role|
+        records.push({
+          subject_id: role.decidim_user_id,
+          subject_type: "Decidim::UserBaseEntity",
+          role: "private_participant",
+          record_id: role.privatable_to_id,
+          record_type: role.privatable_to_type
+        })
+      end
+    end
+
     if Decidim.module_installed?(:assemblies)
-      # TODO: Same as processes
+      Decidim::AssemblyUserRole.find_each do |role|
+        record = {
+          record_type: "Decidim::Assembly",
+          record_id: role.decidim_assembly_id,
+          subject_id: role.decidim_user_id,
+          subject_type: "Decidim::UserBaseEntity"
+        }
+        record[:role] = case role.role.to_sym
+                        when :collaborator
+                          "collaborator"
+                        when :admin
+                          "assembly_admin"
+                        when :moderator
+                          "moderator"
+                        when :evaluator
+                          "evaluator"
+                        end
+        records.push(record)
+      end
     end
 
-    if Decidim.module_installed?(:conferences)
-
+    Decidim::ParticipatorySpacePrivateUser.find_each do |role|
+      records.push({
+        subject_id: role.decidim_user_id,
+        subject_type: "Decidim::UserBaseEntity",
+        role: "private_participant",
+        record_id: role.privatable_to_id,
+        record_type: role.privatable_to_type
+      })
     end
-    # rubocop:enable Lint/EmptyConditionalBody
 
-    # TODO: Add organization
-    # TODO: Add participatory space admins
-    # TODO: Add debate authors
-    # TODO: Add proposal authors
+    if Decidim.module_installed?(:debates)
+      Decidim::Debates::Debate.find_each do |debate|
+        records.push({
+            record_id: debate.id,
+            record_type: "Decidim::Debates::Debate",
+            subject_id: debate.author.id,
+            subject_type: "Decidim::UserBaseEntity",
+            role: "debate_author"
+          }
+        )
+      end
+    end
+    Decidim::Proposals::Proposal.find_each do |proposal|
+      proposal.authors.each do |author|
+        records.push({
+          record_id: proposal.id,
+          record_type: "Decidim::Proposals::Proposal",
+          subject_id: author.id,
+          subject_type: "Decidim::UserBaseEntity",
+          role: "proposal_author"
+        }
+      )
+      end
+    end
+
+    Decidim::Proposals::CollaborativeDraft.find_each do |draft|
+      draft.authors.each do |author|
+        records.push({
+          record_id: draft.id,
+          record_type: "Decidim::Proposals::CollaborativeDraft",
+          subject_id: author.id,
+          subject_type: "Decidim::UserBaseEntity",
+          role: "collaborative_draft_author"
+        })
+      end
+    end
+
+    if Decidim.module_installed?(:blogs)
+      Decidim::Blogs::Post.find_each do |post|
+        records.push({
+          record_id: post.id,
+          record_type: "Decidim::Blogs::Post",
+          subject_id: post.author.id,
+          subject_type: "Decidim::UserBaseEntity",
+          role: "blog_author"
+        })
+      end
+    end
+
+    if Decidim.module_installed?(:meetings)
+      Decidim::Meetings::Meeting.find_each do |meeting|
+        records.push({
+          record_id: meeting.id,
+          record_type: "Decidim::Meetings::Meeting",
+          subject_id: meeting.author.id,
+          subject_type: "Decidim::UserBaseEntity",
+          role: "meeting_author"
+        })
+      end
+    end
+    Decidim::RBAC::PermissionRoleAssignment.insert_all(records.uniq)
+
     # TODO: Add comment authors
   end
 end
