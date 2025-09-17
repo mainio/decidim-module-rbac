@@ -4,13 +4,14 @@ module Decidim
   module RBAC
     module Policy
       class Assembly < Default
-        context_reader :share_token
+        context_reader :share_token, :assembly
 
         def able?(operation)
+          return true if operation == :list
           return false if record && !record.is_a?(Decidim::Assembly)
 
           case operation
-          when :list, :admin_read, :admin_create, :admin_import
+          when :admin_read, :admin_create, :admin_import
             true
           when :read, :admin_update, :admin_publish, :admin_export, :admin_copy, :admin_preview
             record.present?
@@ -31,7 +32,6 @@ module Decidim
           case operation
           when :read
             return true if record.published? && public_or_transparent?
-            return true if super(:admin_read)
             return true if user_can_preview_space?
           end
 

@@ -119,7 +119,7 @@ module Decidim
                 trashable_deleted_resource.map(&:record)
               elsif respond_to?(:assembly)
                 assembly
-              elsif respond_to(:process)
+              elsif respond_to?(:process)
                 process
               end
         end

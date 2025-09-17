@@ -31,6 +31,8 @@ module Decidim
 
         def allowed?(operation)
           case operation
+          when :read
+            @record ||= participatory_space
           when :list, :admin_list, :admin_read
             @record = accessible_spaces
           when :admin_import, :admin_create, :admin_soft_delete, :admin_destroy, :admin_restore

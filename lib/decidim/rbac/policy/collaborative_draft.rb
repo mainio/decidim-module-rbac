@@ -42,7 +42,8 @@ module Decidim
         def can_request_access_collaborative_draft?
           return false unless subject.present?
 
-          !collaborative_draft.requesters.include?(subject)
+          !collaborative_draft.requesters.include?(subject) &&
+          !collaborative_draft.authors.include?(subject)
         end
       end
     end
