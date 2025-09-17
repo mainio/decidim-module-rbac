@@ -40,7 +40,7 @@ module Decidim
           (record.respond_to?(:component) ? record.component : nil),
           (record.respond_to?(:participatory_space) ? record.participatory_space : nil)
         ]
-        records.push(record.oranization) if fallback && record.respond_to?(:organization)
+        records.push(record.organization) if fallback && record.respond_to?(:organization)
 
         records.compact.uniq
       end

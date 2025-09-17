@@ -4,23 +4,22 @@ module Decidim
   module RBAC
     module Policy
       class ParticipatorySpace < Default
-        context_reader :share_token, :current_participatory_space
+        context_reader :share_token, :current_participatory_space, :trashable_deleted_resource
 
         def able?(operation)
           case operation
           when :read
-            # return true if participatory_space.published? && !participatory_space.private_space?
             return true if user_can_preview_space?
             
-            @subject.present?
+            subject.present?
           when :list, :admin_read, :admin_list, :admin_create, :admin_import
             true
           when :admin_preview, :admin_update, :admin_publish
-            @record.present?
+            record.present?
           when :admin_soft_delete, :admin_destroy
             return false unless record.respond_to?(:deleted?)
 
-            !@record.deleted?
+            !record.deleted?
           when :admin_restore
             return false unless record.respond_to?(:deleted?)
 
@@ -31,11 +30,13 @@ module Decidim
         end
 
         def allowed?(operation)
-          @fallback = false if participatory_space.private_space?
-
           case operation
-          when :list
+          when :list, :admin_list, :admin_read
             @record = accessible_spaces
+          when :admin_import, :admin_create, :admin_soft_delete, :admin_destroy, :admin_restore
+             @fallback = true
+          else
+            @fallback = false if participatory_space.private_space?
           end
 
           super

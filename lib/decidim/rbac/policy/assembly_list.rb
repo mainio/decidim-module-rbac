@@ -9,12 +9,7 @@ module Decidim
         end
 
         def allowed?(operation)
-          # If the permission owner has permission to see the list for 
-          # one of its assemblies,it should have the permission to see the 
-          # entire list.
-          return  Decidim::RBAC.registry.role(:visitor).permissions unless subject.present?
-
-          @record ||= subject.accessible_records("Decidim::Assembly")
+          @record = subject.accessible_records("Decidim::Assembly")
 
           super
         end

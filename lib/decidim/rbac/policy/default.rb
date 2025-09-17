@@ -97,7 +97,7 @@ module Decidim
 
 
         def component
-          @component ||= begin
+          @component ||=
             if respond_to?(:component)
               component
             elsif record.is_a?(Decidim::Component)
@@ -105,18 +105,23 @@ module Decidim
             elsif record.respond_to?(:component)
               record.component
             end
-          end
         end
 
         def participatory_space
-          @participatory_space ||= begin
-            if respond_to?(:current_participatory_space)
-            elsif record.is_a?(Decidim::ParticipatoryProcess)
-              record
-            elsif record.respond_to?(:participatory_space)
-              record.participatory_space
-            end
-          end
+            @participatory_space ||=
+              if respond_to?(:current_participatory_space)
+                current_participatory_space
+              elsif record.is_a?(::Decidim::ParticipatoryProcess)
+                record
+              elsif record.respond_to?(:participatory_space)
+                record.participatory_space
+              elsif respond_to?(:trashable_deleted_resource)
+                trashable_deleted_resource.map(&:record)
+              elsif respond_to?(:assembly)
+                assembly
+              elsif respond_to(:process)
+                process
+              end
         end
       end
     end

@@ -12,8 +12,10 @@ module Decidim
           # If the user has any role on any record
           # that gives the permission to access admin dashboard
           # they should be allowed
-          @record ||= subject.accessible_records
 
+          @record = subject.accessible_records
+          @fallback = false
+          
           super
         end
       end

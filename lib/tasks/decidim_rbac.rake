@@ -227,6 +227,8 @@ namespace :decidim_rbac do
           role: "meeting_author"
         })
       end
+
+      Decidim::Meetings::Registration.where()
     end
     Decidim::RBAC::PermissionRoleAssignment.insert_all(records.uniq)
 

@@ -151,6 +151,7 @@ Decidim::RBAC.define do |reg|
     group.resource :moderation do |res|
       res.operation :admin_read
       res.operation :admin_unhide
+      res.operation :admin_hide
       res.operation :admin_unreport
     end
 
@@ -366,6 +367,8 @@ Decidim::RBAC.define do |reg|
     group.resource :moderation do |res|
       res.operation :admin_create
       res.operation :admin_read
+      res.operation :admin_hide
+      res.operation :admin_undide
     end
 
     group.resource :share_token do |res|
@@ -661,6 +664,13 @@ Decidim::RBAC.define do |reg|
     group.resource :export_space do |res|
       res.operation :create
     end
+
+    group.resource :moderation do |res|
+      res.operation :admin_read
+      res.operation :admin_hide
+      res.operation :admin_unhide
+      res.operation :dmin_unreport
+    end
   end
 
   reg.group :participatory_processes do |group|
@@ -761,6 +771,9 @@ Decidim::RBAC.define do |reg|
     group.resource :moderation do |res|
       res.operation :admin_create
       res.operation :admin_read
+      res.operation :admin_hide
+      res.operation :admin_unhide
+      res.operation :admin_unreport
     end
 
     group.resource :share_token do |res|
