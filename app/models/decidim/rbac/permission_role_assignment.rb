@@ -16,7 +16,9 @@ module Decidim
 
         role_permissions = Decidim::RBAC.registry.roles(*roles)
         role_permissions.inject({}) do |result, role|
-          result.deep_merge(role.permissions)
+          result.deep_merge(role.permissions) do |_key, old_val, new_val|
+            (Array(old_val) + Array(new_val)).compact.uniq
+          end
         end
       end
     end
