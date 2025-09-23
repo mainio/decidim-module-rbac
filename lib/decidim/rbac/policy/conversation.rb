@@ -4,7 +4,7 @@ module Decidim
   module RBAC
     module Policy
       class Conversation < Default
-        context_reader :interlocutor
+        context_reader :conversation
 
         def able?(operation)
           case operation

@@ -7,8 +7,6 @@ module Decidim
         context_reader :user
 
         def able?(operation)
-          return false unless subject
-
           case operation
           when :admin_read, :admin_create, :admin_block
             # Note that the block action should also check that the blocked user

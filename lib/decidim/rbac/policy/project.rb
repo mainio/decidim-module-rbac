@@ -13,7 +13,7 @@ module Decidim
           when :admin_create, :admin_manage_trash
             true
           when :admin_update
-            resource.present?
+            record.present?
           when :admin_soft_delete
             return false unless record.respond_to?(:deleted?)
 

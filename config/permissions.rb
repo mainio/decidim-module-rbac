@@ -596,6 +596,8 @@ Decidim::RBAC.define do |reg|
     group.resource :meeting do |res|
       res.operation :read
       res.operation :list
+      res.operation :register
+      res.operation :create
     end
 
     group.resource :response do |res|

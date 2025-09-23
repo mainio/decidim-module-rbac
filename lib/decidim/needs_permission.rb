@@ -55,14 +55,20 @@ module Decidim
         
         # allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
         unless allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
-          record = extra_context[:record] || extra_context[:resource] || extra_context[:commentable] ||extra_context[:reportable]
+          record = extra_context[:record] || extra_context[:resource] || extra_context[:commentable] || extra_context[:reportable]
           record ||= extra_context[permission] if permission.is_a?(Symbol)
-          record ||= extra_context[:trashable_deleted_resource] if extra_context.has_key?(:trashable_deleted_resource) && [:restore, :soft_delete, :read].include?(operation)
-
+          record ||= extra_context[:trashable_deleted_resource] if extra_context.has_key?(:trashable_deleted_resource) && [:restore, :soft_delete].include?(operation)
+          # Try would not necessarily return the expected result, since some of the methods that are being called are lazier than others
+          # (i.e current_participatory_space compared to current organization).
+          record ||=
+            permissions_context[:current_component] ||
+            permissions_context[:current_participatory_process] ||
+            permissions_context[:current_participatory_space] ||
+            permissions_context[:current_organization]
           raise Decidim::ActionForbidden,
             "Forbidden: operation=#{operation.inspect}, permission=#{permission.inspect}, \n" \
             "record: #{record&.class&.name} ID: #{record&.id}\n"\
-            "context=#{extra_context.inspect}, scope=#{permission_scope.inspect}, \n" \
+            "scope=#{permission_scope.inspect}, \n" \
             "policy class #{RBAC.policy(record)}\n" \
             "user=#{current_user&.id || 'nil'}\n"
         end
@@ -99,8 +105,8 @@ module Decidim
             puts "Resource #{resource}"
             puts "admin_#{operation}"
             puts "POLICY #{policy.class.name}"
-            puts "record: #{record&.class&.name}"
-            puts "subject: #{subject.id}"
+            puts "record: #{record&.class&.name}##{record&.id}"
+            puts "subject: #{subject&.email}##{subject&.id}"
             puts policy.apply(:"admin_#{operation}").inspect
             puts "-*-*-*-*-*-*" * 50
           # end
@@ -109,10 +115,10 @@ module Decidim
         else
           puts "-*-*-*-*-*-*" * 50
           puts "Resource #{resource}"
-          puts "admin_#{operation}"
+          puts "#{operation}"
           puts "POLICY #{policy.class.name}"
-          puts "record: #{record&.class&.name}"
-          puts "subject: #{subject.id}"
+          puts "record: #{record&.class&.name}##{record&.id}"
+          puts "subject: #{subject&.email}##{subject&.id}"
           puts policy.apply(:"admin_#{operation}").inspect
           puts "-*-*-*-*-*-*" * 50
           policy.apply(operation.to_sym)

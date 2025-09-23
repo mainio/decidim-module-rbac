@@ -9,7 +9,7 @@ module Decidim
         end
 
         def allowed?(operation)
-          @record = subject.accessible_records("Decidim::ParticipatoryProcess")
+          @record ||= subject.organization
 
           super
         end

@@ -31,16 +31,16 @@ module Decidim
         def allowed?(operation)
           case operation
           when :read
-            return true if record.published? && public_or_transparent?
+            # return true if record.published? && public_or_transparent?
             return true if user_can_preview_space?
           end
 
           super
         end
 
-        def public_or_transparent?
-          !record.private_space || record.is_transparent?
-        end
+        # def public_or_transparent?
+        #   record.is_transparent?
+        # end
 
         def user_can_preview_space?
           return false if share_token.blank?
@@ -48,6 +48,13 @@ module Decidim
           Decidim::ShareToken.use!(token_for: record, token: share_token, user: subject)
         rescue ActiveRecord::RecordNotFound, StandardError
           false
+        end
+
+        private
+
+        def participatory_space
+          @participatory_space ||= 
+            assembly || super
         end
       end
     end

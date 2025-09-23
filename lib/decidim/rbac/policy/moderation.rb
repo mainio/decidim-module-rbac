@@ -16,9 +16,18 @@ module Decidim
         end
 
         def allowed?(operation)
-          @record = participatory_space
-
+          @record ||= participatory_space
+          
           super
+        end
+
+        private
+
+        def participatory_space
+          @participatory_space ||= current_participatory_space || 
+            assembly ||
+            process ||
+            super
         end
       end
     end

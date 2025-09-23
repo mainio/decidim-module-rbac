@@ -39,9 +39,7 @@ module Decidim
 
         def allowed?(operation)
           case operation
-          when :update, :destroy
-            return false unless subject.present?
-            
+          when :update, :destroy            
             @record ||= blogpost
           end
 

@@ -5,8 +5,6 @@ module Decidim
     module Policy
       class Follow < Default
         def able?(operation)
-          return false unless subject
-
           case operation
           when :create
             true

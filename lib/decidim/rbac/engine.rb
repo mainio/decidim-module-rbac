@@ -42,10 +42,10 @@ module Decidim
         end
 
         ActiveSupport::Notifications.subscribe("decidim.events.meetings.meeting_registration_confirmed") do |_event_name, data|
-          meeting = data[:meeting]
+          meeting = data[:resource]
           user = data[:affected_users].first
 
-           author.assign_role!("meeting_register_owner" ,meeting)
+           user.assign_role!("meeting_participant" ,meeting)
         end
 
         ActiveSupport::Notifications.subscribe("decidim.events.blogs.post_created") do |_event_name, data|
@@ -53,6 +53,13 @@ module Decidim
           author = data[:affected_users].first
 
            author.assign_role!("blog_author" ,debate)
+        end
+
+        ActiveSupport::Notifications.subscribe("decidim.events.meetings.meeting_created") do |_event_name, data|
+          meeting = data[:resource]
+          author = meeting.author  
+          
+          author.assign_role!("meeting_author" ,meeting)
         end
       end
       

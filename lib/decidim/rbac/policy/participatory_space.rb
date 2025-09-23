@@ -4,9 +4,12 @@ module Decidim
   module RBAC
     module Policy
       class ParticipatorySpace < Default
+        delegate :supported_space_classes, to: ::Decidim::RBAC
         context_reader :share_token, :current_participatory_space, :trashable_deleted_resource
 
         def able?(operation)
+          # self.fallback = false if participatory_space.private_space?
+
           case operation
           when :read
             return true if user_can_preview_space?
@@ -32,13 +35,11 @@ module Decidim
         def allowed?(operation)
           case operation
           when :read
-            @record ||= participatory_space
-          when :list, :admin_list, :admin_read
-            @record = accessible_spaces
-          when :admin_import, :admin_create, :admin_soft_delete, :admin_destroy, :admin_restore
-             @fallback = true
-          else
-            @fallback = false if participatory_space.private_space?
+            return true if visible_publicly?(participatory_space, operation)
+
+            self.record = participatory_space if record.blank?
+          when :admin_list, :admin_read
+            self.record = accessible_spaces if record.blank?
           end
 
           super
@@ -56,6 +57,12 @@ module Decidim
 
         def accessible_spaces
           subject.accessible_records("Decidim::ParticipatoryProcess")
+        end
+
+        def participatory_space
+          @participatory_space ||= current_participatory_space 
+          @participatory_space ||= trashable_deleted_resource if trashable_deleted_resource.is_a?(Decidim::ParticipatoryProcess) ||
+          @participatory_space ||= super
         end
       end
     end

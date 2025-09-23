@@ -13,8 +13,8 @@ module Decidim
           # that gives the permission to access admin dashboard
           # they should be allowed
 
-          @record = subject.accessible_records
-          @fallback = false
+          self.record = subject.accessible_records
+          self.fallback = false
           
           super
         end

@@ -4,7 +4,7 @@ module Decidim
   module RBAC
     module Policy
       class Amendment < Default
-        context_reader :component, :current_component
+        context_reader :component, :current_component, :amendable
 
         def able?(operation)
           return false unless component
@@ -22,6 +22,15 @@ module Decidim
           else
             false
           end
+        end
+
+        def allowed?(operation)
+          case operation
+          when :reject, :accept
+            @record = amendable
+          end
+          
+          super
         end
 
         private

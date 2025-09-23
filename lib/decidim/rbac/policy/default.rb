@@ -4,6 +4,8 @@ module Decidim
   module RBAC
     module Policy
       class Default
+        include RolePermissionsHelper
+
         class << self
           def context_readers
             @context_readers ||=
@@ -69,7 +71,8 @@ module Decidim
 
         private
 
-        attr_reader :record, :subject
+        attr_reader :subject
+        attr_accessor :record, :fallback
 
         def has_permission?(operation)
           operations = permissions[resource_key]
@@ -77,24 +80,6 @@ module Decidim
 
           operations.include?(operation)
         end
-
-        def resource_key
-          @resource_key ||= self.class.name.underscore.split("/").last.to_sym
-        end
-
-        def permissions
-          @permissions ||=
-            if subject.present?
-              subject.permissions_within(record, @fallback)
-            else
-              Decidim::RBAC.registry.role(:visitor).permissions
-            end
-        end
-
-        def able_to_read_publicly?(operation)
-          [:read, :admin_read].include?(operation)
-        end
-
 
         def component
           @component ||=
@@ -108,20 +93,21 @@ module Decidim
         end
 
         def participatory_space
-            @participatory_space ||=
-              if respond_to?(:current_participatory_space)
-                current_participatory_space
-              elsif record.is_a?(::Decidim::ParticipatoryProcess)
-                record
-              elsif record.respond_to?(:participatory_space)
-                record.participatory_space
-              elsif respond_to?(:trashable_deleted_resource)
-                trashable_deleted_resource.map(&:record)
-              elsif respond_to?(:assembly)
-                assembly
-              elsif respond_to?(:process)
-                process
-              end
+          @participatory_space ||= record if record.is_a?(::Decidim::ParticipatoryProcess)
+          @participatory_space ||= record.participatory_space if record.respond_to?(:participatory_space)
+        end
+
+        def resource_key
+          @resource_key ||= self.class.name.underscore.split("/").last.to_sym
+        end
+
+        def permissions
+          @permissions ||=
+            if subject.present?
+              subject.permissions_within(record, @fallback)
+            else
+              Decidim::RBAC.registry.role(:visitor).permissions
+            end
         end
       end
     end

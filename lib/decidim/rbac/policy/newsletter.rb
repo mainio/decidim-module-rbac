@@ -5,8 +5,6 @@ module Decidim
     module Policy
       class Newsletter < Default
         def able?(operation)
-          return false unless subject
-
           case operation
           when :admin_index, :admin_create
             true

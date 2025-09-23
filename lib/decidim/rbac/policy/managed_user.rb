@@ -7,8 +7,6 @@ module Decidim
         context_reader :organization, :current_organization
 
         def able?(operation)
-          return false unless subject
-
           case operation
           when :admin_read, :admin_promote, :impersonate
             true

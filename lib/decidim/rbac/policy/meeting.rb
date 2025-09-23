@@ -49,23 +49,14 @@ module Decidim
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def allowed?(operation)
-          @fallback = false if participatory_space.private_space?
+          self.record ||= meeting
+          self.fallback = false if participatory_space.private_space?
 
           case operation
-          when :read
-            # TODO: THESE PEOPLE CAN SEE THE MEETINGS:
-            # 1. admins -> No restriction 
-            # 2. Those who have a role in the space(i.e process_admin):
-            # All meetings in the same space they have the permissions
-            # 3. Members of a private space:
-            # 4. Users who have registered to a private or hidden meeting
-            # They can see those meetings that are not hidden, or if hidden, they are transparent.
-            # ** All users(even the admins) in the public scope, can see the meetings that are not passed
-
-            @record = participatory_space
-            @fallback = false if participatory_space.private_space?
+          when :admin_read_invites, :admin_invite_attendee
+            super
           else
-
+            return false unless visible_publicly?(meeting.component, operation)
           end
           super
         end

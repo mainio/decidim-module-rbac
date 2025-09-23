@@ -83,6 +83,13 @@ module Decidim
         permission_role_assignments.exists?(role: "organization_admin", record: organization)
       end
 
+      def access_roles(record)
+        permission_role_assignments
+          .where(record: [record, organization])
+          .pluck(:role)
+          .uniq
+      end
+
       private
 
       def class_name_supported?(class_name)

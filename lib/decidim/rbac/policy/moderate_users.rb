@@ -19,8 +19,6 @@ module Decidim
         end
 
         def allowed?(_operation)
-          return unless subject.present?
-
           @record ||= subject.organization
 
           super

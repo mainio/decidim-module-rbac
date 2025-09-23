@@ -55,7 +55,7 @@ en:
       process_admin:
         description: People who are assigned to manage a specific process and access the administration section of that process. Permissions under this role are related to those processes.
         name: Process administrator
-      process_member:
+      private_participant:
         description: People who are members of a process. In private processes, only these people can see the resources within the processes they have this role in and participate. Permissions under this role are related to those processes.
         name: Process member
       proposal_author:
