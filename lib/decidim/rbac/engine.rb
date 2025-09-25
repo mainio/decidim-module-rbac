@@ -99,6 +99,7 @@ module Decidim
           Decidim::Admin::ModerationStats.include(Decidim::RBAC::ModerationStatsOverrides)
           # Commands
           Decidim::Proposals::WithdrawProposal.include(Decidim::RBAC::WithdrawProposalOverrides)
+          Decidim::Messaging::StartConversation.include(Decidim::RBAC::StartConversationOverrides)
         end
       end
     end

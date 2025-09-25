@@ -7,22 +7,25 @@ module Decidim
         context_reader :conversation
 
         def able?(operation)
+          return false unless subject.present?
+
           case operation
-          when :list
+          when :list, :create
             true
-          when :read
-            record&.participating?(interlocutor)
-          when :create, :update
-            record&.accept_user?(interlocutor)
+          when :read, :update
+            record&.participating?(subject)
           else
             false
           end
         end
 
-        private
-
-        def interlocutor
-          super || subject
+        def allowed?(operation)
+          case operation
+          when :create
+            @record = subject.organization
+          end
+          
+          super
         end
       end
     end

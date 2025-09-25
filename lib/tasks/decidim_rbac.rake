@@ -228,7 +228,19 @@ namespace :decidim_rbac do
         })
       end
 
-      Decidim::Meetings::Registration.where()
+      # TODO: Decidim::Meetings::Registration.where()
+    end
+
+    Decidim::Messaging::Conversation.find_each do |conversation|
+      conversation.participants.map do |participant|
+        records.push({
+          record_id: conversation.id,
+          record_type: "Decidim::Messaging::Conversation",
+          subject_id: participant.id,
+          subject_type: "Decidim::UserBaseEntity",
+          role: "conversation_participant"
+        })
+      end
     end
     Decidim::RBAC::PermissionRoleAssignment.insert_all(records.uniq)
 

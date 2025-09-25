@@ -20,7 +20,8 @@ module Decidim
       "user_manager",
       "evaluator",
       "private_participant",
-      "collaborative_draft_author"
+      "collaborative_draft_author",
+      "conversation_participant"
     ].freeze
 
     SUPPORTED_SPACE_CLASSES = [

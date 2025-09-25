@@ -19,9 +19,6 @@ en:
       comment_author:
         description: People who have authored a comment. Permissions under this role are related to those specific comments.
         name: Comment author
-      conversation_author:
-        description: People who have started (i.e. authored) a conversation. Permissions under this role are related to those specific conversations.
-        name: Conversation author
       conversation_participant:
         description: People who are a participant in a conversation. Permissions under this role are related to those specific conversations.
         name: Conversation participant

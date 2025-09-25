@@ -1134,6 +1134,11 @@ Decidim::RBAC.define do |reg|
       res.operation :join
       res.operation :leave
     end
+
+    role.resource :conversation do |res|
+      res.operation :create
+      res.operation :list
+    end
   end
 
   reg.role :authorization_owner do |role|
@@ -1161,19 +1166,13 @@ Decidim::RBAC.define do |reg|
     end
   end
 
-  reg.role :conversation_author do |role|
-    # decidim-core
-    role.resource :conversation do |res|
-      res.operation :update
-    end
-  end
-
   reg.role :conversation_participant do |role|
     # decidim-core
     role.resource :conversation do |res|
       res.operation :list
       res.operation :read
       res.operation :show
+      res.operation :update
     end
   end
 
