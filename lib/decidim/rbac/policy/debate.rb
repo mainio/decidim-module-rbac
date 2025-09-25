@@ -11,7 +11,7 @@ module Decidim
           case operation
           when :create
             # TODO: authorization check
-            current_settings&.creation_enabled?
+            record.current_settings&.creation_enabled?
           when :edit
             record.present?
           when :like
