@@ -100,6 +100,10 @@ module Decidim
           # Commands
           Decidim::Proposals::WithdrawProposal.include(Decidim::RBAC::WithdrawProposalOverrides)
           Decidim::Messaging::StartConversation.include(Decidim::RBAC::StartConversationOverrides)
+          # Services
+          Decidim::NotificationGeneratorForRecipient.include(
+            Decidim::RBAC::NotificationGeneratorForRecipientOverrides
+          )
         end
       end
     end

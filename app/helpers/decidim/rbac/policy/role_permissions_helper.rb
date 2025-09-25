@@ -7,7 +7,9 @@ module Decidim
         def visible?(resource = record)
           if resource.is_a?(Decidim::Component)
             return false unless visible?(resource.participatory_space)
-            return can_access_unpublished?(resource)
+            return false if !resource.published? && !can_access_unpublished?(resource)
+
+            return true
           end
 
           return false if resource.private_space? && !can_access_private?(resource)

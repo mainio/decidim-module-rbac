@@ -25,9 +25,6 @@ en:
       debate_author:
         description: People who have authored a debate. Permissions under this role are role related to those specific debates.
         name: Debate author
-      form_answer_author:
-        description: People who have answered a form or a survey. Permissions under this role are related to those specific forms or surveys.
-        name: Form answer author
       group_admin:
         description: People who are administrators in a participant group. Permissions under this role are related to those groups.
         name: Group administrator

@@ -67,6 +67,7 @@ module Decidim
       autoload :Proposals, "decidim/rbac/policy/proposals"
       autoload :PublicPage, "decidim/rbac/policy/public_page"
       autoload :Question, "decidim/rbac/policy/question"
+      autoload :QuestionnaireResponses, "decidim/rbac/policy/questionnaire_responses"
       autoload :QuestionnairePublishResponses, "decidim/rbac/policy/questionnaire_publish_responses"
       autoload :Questionnaire, "decidim/rbac/policy/questionnaire"
       autoload :Reminder, "decidim/rbac/policy/reminder"

@@ -4,15 +4,26 @@ module Decidim
   module RBAC
     module Policy
       class Notification < Default
+        context_reader :notification
+        
         def able?(operation)
           case operation
           when :read
             true
           when :destroy
-            record&.user == subject
+            notification&.user == subject
           else
             false
           end
+        end
+
+        def allowed?(operation)
+          case :notification
+          when :destroy
+            @record ||= notificaiton
+          end
+
+          super
         end
       end
     end

@@ -58,6 +58,7 @@ module Decidim
           else
             return false unless visible_publicly?(meeting.component, operation)
           end
+
           super
         end
       end

@@ -242,6 +242,17 @@ namespace :decidim_rbac do
         })
       end
     end
+
+    Decidim::Notification.find_each do |notification|
+      records.push(
+        record_id: notification.id,
+        record_type: "Decidim::Notification",
+        subject_id: notification.decidim_user_id,
+        subject_type: "Decidim::UserBaseEntity",
+        role: "notification_owner"
+      )
+    end
+    
     Decidim::RBAC::PermissionRoleAssignment.insert_all(records.uniq)
 
     # TODO: Add comment authors
