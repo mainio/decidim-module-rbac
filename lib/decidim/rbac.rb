@@ -23,13 +23,12 @@ module Decidim
       "collaborative_draft_author",
       "conversation_participant",
       "notification_owner",
-      "group_admin"
+      "process_groups_admin"
     ].freeze
 
     SUPPORTED_SPACE_CLASSES = [
       "Decidim::ParticipatoryProcess",
-      "Decidim::ParticipatoryProcessGroup",
-      "Decidim::Assembly"
+      "Decidim::Assembly",
   ].freeze
 
     class << self

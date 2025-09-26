@@ -4,17 +4,23 @@ module Decidim
   module RBAC
     module Policy
       class ProcessGroup < Default
+        context_reader :process_group
+
         def able?(operation)
           case operation
-          when :create, :list
+          when :admin_create, :list, :admin_list, :read, :admin_read
             true
-          when :update, :destroy, :read
-            record.present?
+          when :admin_update, :admin_destroy
+            process_group.present?
+          else
+            false
           end
         end
 
-        def allowed?(operation) 
-          case operation 
+        def allowed?(operation)
+          @record ||= process_group
+
+          case operation
           when :list, :read
             return true 
           end

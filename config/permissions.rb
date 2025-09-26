@@ -278,6 +278,14 @@ Decidim::RBAC.define do |reg|
     group.resource :users_statistics do |res|
       res.operation :admin_read
     end
+
+    group.resource :process_group do |res|
+      res.operation :admin_list
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_destroy
+      res.operation :admin_update
+    end
   end
 
   # decidim-assemblies
@@ -1401,6 +1409,28 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_block
       res.operation :admin_read
       res.operation :admin_unreport
+    end
+  end
+
+  reg.role :process_groups_admin do |role|
+    role.resource :process_group do |res|
+      res.operation :admin_list
+      res.operation :admin_read
+      res.operation :admin_create
+      res.operation :admin_destroy
+      res.operation :admin_update
+    end
+    role.resource :process_list do |res|
+      res.operation :admin_read
+    end
+
+    role.resource :space_area do |res|
+      res.operation :admin_enter
+    end
+
+    role.resource :admin_dashboard do |res|
+      res.operation :read
+      res.operation :admin_read
     end
   end
 end

@@ -14,8 +14,12 @@ module Decidim
 
         def allowed?(_operation)
           @record = begin
-            space_class = space_classes[space_name]
-            subject.accessible_records(space_class) if space_class
+            if space_name == :process_groups
+              subject.permission_role_assignments.where(role: "process_groups_admin", record: subject.organization).map(&:record)
+            else
+              space_class = space_classes[space_name]
+              subject.accessible_records(space_class) if space_class
+            end
           end
 
          super
@@ -26,8 +30,7 @@ module Decidim
         def space_classes
           {
             assemblies: "Decidim::Assembly",
-            processes: "Decidim::ParticipatoryProcess",
-            process_groups: "Decidim::ParticipatoryGroupProcess"
+            processes: "Decidim::ParticipatoryProcess"
           }
         end
       end

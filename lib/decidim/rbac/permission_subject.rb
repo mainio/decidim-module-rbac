@@ -83,6 +83,10 @@ module Decidim
         permission_role_assignments.exists?(role: "organization_admin", record: organization)
       end
 
+      def is_process_groups_admin?
+        permission_role_assignments.exists?(role: "process_groups_admin", record: organization)
+      end
+
       def access_roles(record)
         permission_role_assignments
           .where(record: [record, organization])
