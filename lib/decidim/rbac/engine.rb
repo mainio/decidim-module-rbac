@@ -100,6 +100,12 @@ module Decidim
           # Commands
           Decidim::Proposals::WithdrawProposal.include(Decidim::RBAC::WithdrawProposalOverrides)
           Decidim::Messaging::StartConversation.include(Decidim::RBAC::StartConversationOverrides)
+          Decidim::Admin::CreateParticipatorySpacePrivateUser.prepend(
+            Decidim::RBAC::CreateParticipatorySpacePrivateUserOverrides
+          )
+          Decidim::Admin::DestroyParticipatorySpacePrivateUser.include(
+            Decidim::RBAC::DestroyParticipatorySpacePrivateUserOverrides
+          )
           # Services
           Decidim::NotificationGeneratorForRecipient.include(
             Decidim::RBAC::NotificationGeneratorForRecipientOverrides

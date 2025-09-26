@@ -22,7 +22,8 @@ module Decidim
       "private_participant",
       "collaborative_draft_author",
       "conversation_participant",
-      "notification_owner"
+      "notification_owner",
+      "group_admin"
     ].freeze
 
     SUPPORTED_SPACE_CLASSES = [

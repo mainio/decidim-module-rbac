@@ -111,19 +111,6 @@ namespace :decidim_rbac do
         end
         records.push(record)
       end
-      Decidim::ParticipatoryProcess.where(private_space: true).find_each do |space|
-        space.users.map do |subject|
-          records.push(
-            {
-              record_id: space.id,
-              record_type: "Decidim::ParticipatoryProcess",
-              role: "private_participant",
-              subject_id: subject.id,
-              subject_type: "Decidim::UserBaseEntity"
-            }
-          )
-        end
-      end
 
       Decidim::ParticipatorySpacePrivateUser.find_each do |role|
         records.push({
