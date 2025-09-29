@@ -68,6 +68,12 @@ module Decidim
 
           author.assign_role!("comment_author" ,comment)
         end
+
+        ActiveSupport::Notifications.subscribe("decidim.events.core.welcome_notification") do |_event_name, data|
+          user = data[:affected_users].first
+
+          user.assign_role!("participant" ,user.organization)
+        end
       end
       
       initializer "decidim_rbac.add_inflector_active_support" do

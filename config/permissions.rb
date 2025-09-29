@@ -1268,6 +1268,7 @@ Decidim::RBAC.define do |reg|
     # decidim-assemblies
     role.resource :assembly do |res|
       res.operation :read
+      res.operation :list
     end
 
     # should be `assembly_members`
@@ -1298,6 +1299,7 @@ Decidim::RBAC.define do |reg|
     # decidim-meetings
     role.resource :meeting do |res|
       res.operation :embed
+      res.operation :read
     end
 
     # decidim-participatory_processes
