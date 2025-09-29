@@ -120,10 +120,12 @@ module Decidim
           Decidim::Admin::ModerationStats.include(Decidim::RBAC::ModerationStatsOverrides)
           # Commands
           Decidim::Proposals::WithdrawProposal.include(Decidim::RBAC::WithdrawProposalOverrides)
+          Decidim::Meetings::WithdrawMeeting.include(Decidim::RBAC::WithdrawMeetingOverrides)
           Decidim::Messaging::StartConversation.include(Decidim::RBAC::StartConversationOverrides)
           Decidim::Admin::CreateParticipatorySpacePrivateUser.prepend(
             Decidim::RBAC::CreateParticipatorySpacePrivateUserOverrides
           )
+          Decidim::DestroyAccount.include(Decidim::RBAC::DestroyAccountExtensions)
           # Services
           Decidim::NotificationGeneratorForRecipient.include(
             Decidim::RBAC::NotificationGeneratorForRecipientOverrides

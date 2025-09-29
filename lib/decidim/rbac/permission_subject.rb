@@ -21,7 +21,7 @@ module Decidim
 
       included do
         has_many :permission_role_assignments, as: :subject, class_name: "Decidim::RBAC::PermissionRoleAssignment", dependent: :destroy
-        # has_many :permission_roles, through: :permission_role_assignments
+        after_destroy :unassign_all_roles!
       end
 
       def permissions_within(record, fallback)
@@ -92,6 +92,11 @@ module Decidim
           .where(record: [record, organization])
           .pluck(:role)
           .uniq
+      end
+
+      def unassign_all_roles!
+        permission_role_assignments
+          .where(subject: self).destroy_all
       end
 
       private
