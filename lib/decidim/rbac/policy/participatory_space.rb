@@ -14,7 +14,7 @@ module Decidim
           when :read
             return true if user_can_preview_space?
             
-            subject.present?
+            record.present?
           when :list, :admin_read, :admin_list, :admin_create, :admin_import
             true
           when :admin_preview, :admin_update, :admin_publish
@@ -34,6 +34,8 @@ module Decidim
 
         def allowed?(operation)
           case operation
+          when :list
+            return true
           when :read
             return true if visible_publicly?(participatory_space, operation)
 

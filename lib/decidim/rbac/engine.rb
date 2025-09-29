@@ -61,6 +61,13 @@ module Decidim
           
           author.assign_role!("meeting_author" ,meeting)
         end
+
+        ActiveSupport::Notifications.subscribe("decidim.comments.create_comment:after") do |_event_name, data|
+          comment = data[:resource]
+          author = data[:extra][:event_author]
+
+          author.assign_role!("comment_author" ,comment)
+        end
       end
       
       initializer "decidim_rbac.add_inflector_active_support" do
@@ -93,6 +100,14 @@ module Decidim
         config.to_prepare do
           # Models
           Decidim::UserBaseEntity.include(Decidim::RBAC::PermissionSubject)
+          Decidim::Comments::Comment.include(Decidim::RBAC::RoleAssignmentableResource)
+          Decidim::Blogs::Post.include(Decidim::RBAC::RoleAssignmentableResource)
+          Decidim::ParticipatorySpacePrivateUser.include(Decidim::RBAC::RoleAssignmentableResource)
+          Decidim::Proposals::Proposal.include(Decidim::RBAC::RoleAssignmentableResource)
+          Decidim::Meetings::Meeting.include(Decidim::RBAC::RoleAssignmentableResource)
+          Decidim::Meetings::Registration.include(Decidim::RBAC::RoleAssignmentableResource)
+          Decidim::Proposals::CollaborativeDraft.include(Decidim::RBAC::RoleAssignmentableResource)
+          Decidim::Debates::Debate.include(Decidim::RBAC::RoleAssignmentableResource)
           # Queries
           Decidim::ParticipatoryProcessesWithUserRole.include(Decidim::RBAC::ParticipatoryProcessesWithUserRoleOverrides)
           Decidim::Assemblies::AssembliesWithUserRole.include(Decidim::RBAC::AssembliesWithUserRoleOverrides)
@@ -102,9 +117,6 @@ module Decidim
           Decidim::Messaging::StartConversation.include(Decidim::RBAC::StartConversationOverrides)
           Decidim::Admin::CreateParticipatorySpacePrivateUser.prepend(
             Decidim::RBAC::CreateParticipatorySpacePrivateUserOverrides
-          )
-          Decidim::Admin::DestroyParticipatorySpacePrivateUser.include(
-            Decidim::RBAC::DestroyParticipatorySpacePrivateUserOverrides
           )
           # Services
           Decidim::NotificationGeneratorForRecipient.include(

@@ -4,11 +4,12 @@ module Decidim
   module RBAC
     module Policy
       class Comment < Default
-        context_reader :commentable
+        context_reader :commentable, :comment
 
         # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def able?(operation)
           return unless record.present?
+
           case operation
           when :read
             commentable.commentable?
@@ -32,6 +33,15 @@ module Decidim
           end
         end
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+        def allowed_to?(operation)
+          case operation
+          when :edit, :destroy, :vote
+            @record ||= comment
+          end
+
+          super
+        end
 
         private
 

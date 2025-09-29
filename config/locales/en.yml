@@ -28,9 +28,6 @@ en:
       group_admin:
         description: People who are administrators in a participant group. Permissions under this role are related to those groups.
         name: Group administrator
-      group_member:
-        description: People who are members in a participant group. Permissions under this role are related to those groups.
-        name: Group member
       meeting_author:
         description: People who have authored a meeting. Permissions under this role are related to those specific meetings.
         name: Meeting author
