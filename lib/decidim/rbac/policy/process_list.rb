@@ -9,7 +9,14 @@ module Decidim
         end
 
         def allowed?(operation)
-          @record ||= subject.organization
+          case operation
+          when :admin_read
+            return false unless subject
+
+            @record = subject.accessible_records
+          else
+            return false
+          end
 
           super
         end

@@ -114,6 +114,7 @@ module Decidim
           Decidim::Meetings::Registration.include(Decidim::RBAC::RoleAssignmentableResource)
           Decidim::Proposals::CollaborativeDraft.include(Decidim::RBAC::RoleAssignmentableResource)
           Decidim::Debates::Debate.include(Decidim::RBAC::RoleAssignmentableResource)
+          Decidim::Meetings::Meeting.include(Decidim::RBAC::MeetingOverrides)
           # Queries
           Decidim::ParticipatoryProcessesWithUserRole.include(Decidim::RBAC::ParticipatoryProcessesWithUserRoleOverrides)
           Decidim::Assemblies::AssembliesWithUserRole.include(Decidim::RBAC::AssembliesWithUserRoleOverrides)

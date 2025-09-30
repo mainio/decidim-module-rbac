@@ -38,10 +38,6 @@ module Decidim
           super
         end
 
-        # def public_or_transparent?
-        #   record.is_transparent?
-        # end
-
         def user_can_preview_space?
           return false if share_token.blank?
 

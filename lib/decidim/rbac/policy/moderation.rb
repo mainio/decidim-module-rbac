@@ -6,18 +6,14 @@ module Decidim
       class Moderation < Default
         context_reader :process, :assembly, :current_participatory_space
 
-        def able?(operation)
-          case operation
-          when :admin_hide, :admin_unhide, :admin_unreport, :dmin_read
-            @record.present?
-          else 
-            super
-          end
-        end
-
         def allowed?(operation)
-          @record ||= participatory_space
-          
+          case operation
+          when :admin_hide, :admin_unhide, :admin_unreport, :admin_read
+            @record = participatory_space
+          else
+             @record ||= participatory_space || subject&.organization
+          end
+
           super
         end
 

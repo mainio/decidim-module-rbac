@@ -2,73 +2,58 @@
 
 module Decidim
   module RBAC
-    module MeetingOverride
+    module MeetingOverrides
       extend ActiveSupport::Concern
 
       included do
-        
+        scope :visible_for, ->(user) do
+          process_meetings = joins(:component)
+                             .joins("INNER JOIN decidim_participatory_processes AS p
+                                     ON p.id = decidim_components.participatory_space_id")
+                             .where(decidim_components: { participatory_space_type: "Decidim::ParticipatoryProcess" })
+                             .where.not(decidim_components: { published_at: nil })
+                             .where.not(published_at: nil)
+                             .where(p: { private_space: false })
+
+          assembly_meetings = joins(:component)
+                              .joins("INNER JOIN decidim_assemblies AS a
+                                      ON a.id = decidim_components.participatory_space_id")
+                              .where(decidim_components: { participatory_space_type: "Decidim::Assembly" })
+                              .where.not(decidim_components: { published_at: nil })
+                              .where.not(a: { published_at: nil })
+                              .where(a: { private_space: false })
+
+          public_meetings = where(id: process_meetings).or(where(id: assembly_meetings))
+
+          return public_meetings.distinct unless user.present?
+
+          process_special = joins(:component)
+                            .joins("INNER JOIN decidim_participatory_processes AS p
+                                    ON p.id = decidim_components.participatory_space_id")
+                            .joins("INNER JOIN decidim_rbac_permission_role_assignments AS pra
+                                    ON pra.record_type = 'Decidim::ParticipatorySpace'
+                                    AND pra.record_id = p.id
+                                    AND pra.subject_type = 'Decidim::User'
+                                    AND pra.subject_id = #{user.id}
+                                    AND pra.role IN ('process_admin','assembly_admin','private_user')")
+                            .where(decidim_components: { participatory_space_type: "Decidim::ParticipatoryProcess" })
+
+          assembly_special = joins(:component)
+                             .joins("INNER JOIN decidim_assemblies AS a
+                                     ON a.id = decidim_components.participatory_space_id")
+                             .joins("INNER JOIN decidim_rbac_permission_role_assignments AS pra
+                                     ON pra.record_type = 'Decidim::ParticipatorySpace'
+                                     AND pra.record_id = a.id
+                                     AND pra.subject_type = 'Decidim::User'
+                                     AND pra.subject_id = #{user.id}
+                                     AND pra.role IN ('process_admin','assembly_admin','private_user')")
+                             .where(decidim_components: { participatory_space_type: "Decidim::Assembly" })
+
+          special_meetings = where(id: process_special).or(where(id: assembly_special))
+
+          where(id: public_meetings).or(where(id: special_meetings)).distinct
+        end
       end
     end
-  end
-end
-
-
-scope :visible_for, lambda { |user|
-  if user.present?
-    (spaces = Decidim.participatory_space_registry.manifests.filter_map do |manifest|
-      table_name = manifest.model_class_name.constantize.try(:table_name)
-      next if table_name.blank?
-
-      {
-        name: table_name.singularize,
-        class_name: manifest.model_class_name
-      }
-    end)
-    (user_role_queries = spaces.map do |space|
-      roles_table = "#{space[:name]}_user_roles"
-      next unless connection.table_exists?(roles_table)
-
-      "SELECT decidim_components.id FROM decidim_components
-      WHERE CONCAT(decidim_components.participatory_space_id, '-', decidim_components.participatory_space_type)
-      IN
-      (SELECT CONCAT(#{roles_table}.#{space[:name]}_id, '-#{space[:class_name]}')
-      FROM #{roles_table} WHERE #{roles_table}.decidim_user_id = ?)
-      "
-    end)
-
-    query = "
-      decidim_meetings_meetings.private_meeting = ?
-      OR decidim_meetings_meetings.transparent = ?
-      OR decidim_meetings_meetings.id IN (
-        SELECT decidim_meetings_registrations.decidim_meeting_id FROM decidim_meetings_registrations WHERE decidim_meetings_registrations.decidim_user_id = ?
-      )
-      OR decidim_meetings_meetings.decidim_component_id IN (
-        SELECT decidim_components.id FROM decidim_components
-        WHERE CONCAT(decidim_components.participatory_space_id, '-', decidim_components.participatory_space_type)
-        IN
-          (SELECT CONCAT(decidim_participatory_space_private_users.privatable_to_id, '-', decidim_participatory_space_private_users.privatable_to_type)
-          FROM decidim_participatory_space_private_users WHERE decidim_participatory_space_private_users.decidim_user_id = ?)
-      )
-    "
-    if user_role_queries.any?
-      query = "#{query} OR decidim_meetings_meetings.decidim_component_id IN
-        (#{user_role_queries.compact.join(" UNION ")})
-      "
-    end
-
-    where(Arel.sql(query).to_s, false, true, user.id, user.id, *user_role_queries.compact.map { user.id }).published.distinct
-  else
-    published.visible
-  end
-}
-
-def visible_for(user)
-  return [] if !user.present?
-
-  class_names = Decidim.participatory_space_registry.manifests.filter_map do |manifest|
-    manifest.model_class_name if manifest.model_class_name.present?
-  end
-  spaces.map do |space|
-    
   end
 end

@@ -119,7 +119,7 @@ module Decidim
           puts "POLICY #{policy.class.name}"
           puts "record: #{record&.class&.name}##{record&.id}"
           puts "subject: #{subject&.email}##{subject&.id}"
-          puts policy.apply(:"admin_#{operation}").inspect
+          puts policy.apply(:"#{operation}").inspect
           puts "-*-*-*-*-*-*" * 50
           policy.apply(operation.to_sym)
         end

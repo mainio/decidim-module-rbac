@@ -935,7 +935,6 @@ Decidim::RBAC.define do |reg|
     role.apply :collaborative_texts_admin
     role.apply :debates_admin
     role.apply :meetings_admin
-    role.apply :meetings
     role.apply :pages_admin
     role.apply :proposals_admin
     role.apply :sortitions_admin
@@ -955,12 +954,10 @@ Decidim::RBAC.define do |reg|
     role.apply :collaborative_texts_admin
     role.apply :debates_admin
     role.apply :meetings_admin
-    role.apply :meetings
     role.apply :pages_admin
     role.apply :proposals_admin
     role.apply :sortitions_admin
     role.apply :surveys_admin
-    role.apply :templates_admin
   end
 
   reg.role :process_admin do |role|
@@ -974,12 +971,10 @@ Decidim::RBAC.define do |reg|
     role.apply :collaborative_texts_admin
     role.apply :debates_admin
     role.apply :meetings_admin
-    role.apply :meetings
     role.apply :pages_admin
     role.apply :proposals_admin
     role.apply :sortitions_admin
     role.apply :surveys_admin
-    role.apply :templates_admin
     role.apply :private_participant
   end
 
@@ -1141,6 +1136,10 @@ Decidim::RBAC.define do |reg|
       res.operation :create
       res.operation :join
       res.operation :leave
+    end
+
+    role.resource :moderation do |res|
+      res.operation :create
     end
 
     role.resource :conversation do |res|
@@ -1378,9 +1377,9 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_read
     end
 
-      role.resource :participatory_space do |res|
-        res.operation :read
-        res.operation :admin_read
+    role.resource :participatory_space do |res|
+      res.operation :read
+      res.operation :admin_read
     end
 
     role.resource :admin_dashboard do |res|
