@@ -5,7 +5,7 @@ module Decidim
     module Policy
       class CollaborativeDraft < Default
         context_reader :collaborative_draft
-
+        # rubocop:disable Metrics/CyclomaticComplexity
         def able?(operation)
           return false unless collaborative_drafts_enabled?
 
@@ -22,9 +22,10 @@ module Decidim
             false
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def allowed?(operation)
-          case operation 
+          case operation
           when :create
             return true
           end
@@ -40,10 +41,10 @@ module Decidim
         end
 
         def can_request_access_collaborative_draft?
-          return false unless subject.present?
+          return false if subject.blank?
 
-          !collaborative_draft.requesters.include?(subject) &&
-          !collaborative_draft.authors.include?(subject)
+          collaborative_draft.requesters.exclude?(subject) &&
+            collaborative_draft.authors.exclude?(subject)
         end
       end
     end

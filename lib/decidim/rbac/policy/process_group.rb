@@ -22,7 +22,7 @@ module Decidim
 
           case operation
           when :list, :read
-            return true 
+            return true
           end
 
           super

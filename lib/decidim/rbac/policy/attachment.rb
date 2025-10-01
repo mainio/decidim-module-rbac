@@ -6,9 +6,7 @@ module Decidim
       class Attachment < Default
         def able?(operation)
           case operation
-          when :admin_read, :admin_create
-            record.present?
-          when :admin_update, :admin_destroy
+          when :admin_read, :admin_create, :admin_update, :admin_destroy
             record.present?
           else
             false

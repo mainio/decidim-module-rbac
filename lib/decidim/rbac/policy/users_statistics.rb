@@ -1,4 +1,6 @@
-# frozen_string_literal 
+# frozen_string_literal: true
+
+# frozen_string_literal
 
 module Decidim
   module RBAC

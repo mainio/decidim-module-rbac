@@ -6,7 +6,7 @@ module Decidim
       class Blogpost < Default
         context_reader :blogpost
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/CyclomaticComplexity
         def able?(operation)
           case operation
           when :admin_update, :admin_destroy
@@ -28,7 +28,7 @@ module Decidim
           when :create
             can_manage_post?
           when :update, :destroy
-            return false unless record.present?
+            return false if record.blank?
 
             can_manage_post?
           else
@@ -39,13 +39,13 @@ module Decidim
 
         def allowed?(operation)
           case operation
-          when :update, :destroy            
+          when :update, :destroy
             @record ||= blogpost
           end
 
           super
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         private
 
@@ -71,7 +71,7 @@ module Decidim
         end
 
         def creation_enabled_for_participants?
-          return false unless component.present?
+          return false if component.blank?
 
           component.settings&.creation_enabled_for_participants?
         end

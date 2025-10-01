@@ -8,7 +8,7 @@ module Decidim
 
         def able?(operation)
           return false unless operation == :admin_create
-          return unless proposal.present?
+          return false if proposal.blank?
 
           current_settings&.proposal_answering_enabled &&
             component_settings&.proposal_answering_enabled

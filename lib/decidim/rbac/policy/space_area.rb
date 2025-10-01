@@ -13,19 +13,17 @@ module Decidim
         end
 
         def allowed?(_operation)
-          @record = begin
-            if space_name == :process_groups
-              subject.permission_role_assignments.where(role: "process_groups_admin", record: subject.organization).map(&:record)
-            else
-              space_class = space_classes[space_name]
-              subject.accessible_records(space_class) if space_class
-            end
-          end
+          @record = if space_name == :process_groups
+                      subject.permission_role_assignments.where(role: "process_groups_admin", record: subject.organization).map(&:record)
+                    else
+                      space_class = space_classes[space_name]
+                      subject.accessible_records(space_class) if space_class
+                    end
 
-         super
+          super
         end
 
-        private 
+        private
 
         def space_classes
           {

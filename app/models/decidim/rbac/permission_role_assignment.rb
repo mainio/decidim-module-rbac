@@ -10,7 +10,7 @@ module Decidim
         pluck(:role)
       end
 
-      def self.permissions(roles=nil)
+      def self.permissions(roles = nil)
         roles ||= self.roles
         return {} if roles.empty?
 

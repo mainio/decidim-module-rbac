@@ -15,7 +15,7 @@ module Decidim
 
           self.record = subject.accessible_records
           self.fallback = false
-          
+
           super
         end
       end

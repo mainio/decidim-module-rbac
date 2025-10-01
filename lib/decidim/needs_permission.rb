@@ -46,38 +46,41 @@ module Decidim
         }
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def enforce_permission_to(operation, permission, extra_context = {})
         if Rails.env.development?
           Rails.logger.debug "==========="
           Rails.logger.debug [permission_scope, operation, permission, permission_class_chain].map(&:inspect).join("\n")
           Rails.logger.debug "==========="
         end
-        
+
         # allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
-        unless allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
-          record = extra_context[:record] || extra_context[:resource] || extra_context[:commentable] || extra_context[:reportable]
-          record ||= extra_context[permission] if permission.is_a?(Symbol)
-          record ||= extra_context[:trashable_deleted_resource] if extra_context.has_key?(:trashable_deleted_resource) && [:restore, :soft_delete].include?(operation)
-          # Try would not necessarily return the expected result, since some of the methods that are being called are lazier than others
-          # (i.e current_participatory_space compared to current organization).
-          record ||=
-            permissions_context[:current_component] ||
-            permissions_context[:current_participatory_process] ||
-            permissions_context[:current_participatory_space] ||
-            permissions_context[:current_organization]
-          raise Decidim::ActionForbidden,
-            "Forbidden: operation=#{operation.inspect}, permission=#{permission.inspect}, \n" \
-            "record: #{record&.class&.name} ID: #{record&.id}\n"\
-            "scope=#{permission_scope.inspect}, \n" \
-            "policy class #{RBAC.policy(record)}\n" \
-            "user=#{current_user&.id || 'nil'}\n"
-        end
+        return if allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
+
+        record = extra_context[:record] || extra_context[:resource] || extra_context[:commentable] || extra_context[:reportable]
+        record ||= extra_context[permission] if permission.is_a?(Symbol)
+        record ||= extra_context[:trashable_deleted_resource] if extra_context.has_key?(:trashable_deleted_resource) && [:restore, :soft_delete].include?(operation)
+        # Try would not necessarily return the expected result, since some of the methods that are being called are lazier than others
+        # (i.e current_participatory_space compared to current organization).
+        record ||=
+          permissions_context[:current_component] ||
+          permissions_context[:current_participatory_process] ||
+          permissions_context[:current_participatory_space] ||
+          permissions_context[:current_organization]
+        raise Decidim::ActionForbidden,
+              "Forbidden: operation=#{operation.inspect}, permission=#{permission.inspect}, \n" \
+              "record: #{record&.class&.name} ID: #{record&.id}\n" \
+              "scope=#{permission_scope.inspect}, \n" \
+              "policy class #{RBAC.policy(record)}\n" \
+              "user=#{current_user&.id || "nil"}\n"
+
         # raise Decidim::ActionForbidden unless allowed_to?(operation, permission, extra_context, permission_class_chain, current_user, permission_scope)
       end
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def allowed_to?(operation, resource, extra_context = {}, _chain = permission_class_chain, subject = current_user, scope = nil)
-      # These are just a way to try to make it work with all the cases that
+        # These are just a way to try to make it work with all the cases that
         # use this method. Ideally, those parts that are not compatible with the
         # API should be rewritten in the future.
         record = extra_context[:record] || extra_context[:resource] || extra_context[:commentable] || extra_context[:reportable]
@@ -85,7 +88,7 @@ module Decidim
         record ||= extra_context[:trashable_deleted_resource] if extra_context.has_key?(:trashable_deleted_resource) && [:restore, :soft_delete].include?(operation)
         # Try would not necessarily return the expected result, since some of the methods that are being called are lazier than others
         # (i.e current_participatory_space compared to current organization).
-       record ||=
+        record ||=
           permissions_context[:current_component] ||
           permissions_context[:current_participatory_process] ||
           permissions_context[:current_participatory_space] ||

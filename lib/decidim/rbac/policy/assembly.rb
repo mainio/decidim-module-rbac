@@ -5,7 +5,7 @@ module Decidim
     module Policy
       class Assembly < Default
         context_reader :share_token, :assembly
-
+        # rubocop:disable Metrics/CyclomaticComplexity
         def able?(operation)
           return true if operation == :list
           return false if record && !record.is_a?(Decidim::Assembly)
@@ -27,11 +27,11 @@ module Decidim
             false
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def allowed?(operation)
           case operation
           when :read
-            # return true if record.published? && public_or_transparent?
             return true if user_can_preview_space?
           end
 
@@ -49,7 +49,7 @@ module Decidim
         private
 
         def participatory_space
-          @participatory_space ||= 
+          @participatory_space ||=
             assembly || super
         end
       end

@@ -83,11 +83,11 @@ namespace :decidim_rbac do
           record_type: "Decidim::Organization"
         }
         records.push(record)
-        if user.admin?
-          admin_role = record.dup
-          admin_role[:role] = "organization_admin"
-          records.push(admin_role)
-        end
+        next unless user.admin?
+
+        admin_role = record.dup
+        admin_role[:role] = "organization_admin"
+        records.push(admin_role)
       end
     end
 
@@ -100,26 +100,26 @@ namespace :decidim_rbac do
           subject_type: "Decidim::UserBaseEntity"
         }
         record[:role] = case role.role.to_sym
-        when :collaborator
-          "collaborator"
-        when :admin
-          "process_admin"
-        when :moderator
-          "moderator"
-        when :evaluator
-          "evaluator"
-        end
+                        when :collaborator
+                          "collaborator"
+                        when :admin
+                          "process_admin"
+                        when :moderator
+                          "moderator"
+                        when :evaluator
+                          "evaluator"
+                        end
         records.push(record)
       end
 
       Decidim::ParticipatorySpacePrivateUser.find_each do |role|
         records.push({
-          subject_id: role.decidim_user_id,
-          subject_type: "Decidim::UserBaseEntity",
-          role: "private_participant",
-          record_id: role.privatable_to_id,
-          record_type: role.privatable_to_type
-        })
+                       subject_id: role.decidim_user_id,
+                       subject_type: "Decidim::UserBaseEntity",
+                       role: "private_participant",
+                       record_id: role.privatable_to_id,
+                       record_type: role.privatable_to_type
+                     })
       end
     end
 
@@ -147,72 +147,70 @@ namespace :decidim_rbac do
 
     Decidim::ParticipatorySpacePrivateUser.find_each do |role|
       records.push({
-        subject_id: role.decidim_user_id,
-        subject_type: "Decidim::UserBaseEntity",
-        role: "private_participant",
-        record_id: role.privatable_to_id,
-        record_type: role.privatable_to_type
-      })
+                     subject_id: role.decidim_user_id,
+                     subject_type: "Decidim::UserBaseEntity",
+                     role: "private_participant",
+                     record_id: role.privatable_to_id,
+                     record_type: role.privatable_to_type
+                   })
     end
 
     if Decidim.module_installed?(:debates)
       Decidim::Debates::Debate.find_each do |debate|
         records.push({
-            record_id: debate.id,
-            record_type: "Decidim::Debates::Debate",
-            subject_id: debate.author.id,
-            subject_type: "Decidim::UserBaseEntity",
-            role: "debate_author"
-          }
-        )
+                       record_id: debate.id,
+                       record_type: "Decidim::Debates::Debate",
+                       subject_id: debate.author.id,
+                       subject_type: "Decidim::UserBaseEntity",
+                       role: "debate_author"
+                     })
       end
     end
     Decidim::Proposals::Proposal.find_each do |proposal|
       proposal.authors.each do |author|
         records.push({
-          record_id: proposal.id,
-          record_type: "Decidim::Proposals::Proposal",
-          subject_id: author.id,
-          subject_type: "Decidim::UserBaseEntity",
-          role: "proposal_author"
-        }
-      )
+                       record_id: proposal.id,
+                       record_type: "Decidim::Proposals::Proposal",
+                       subject_id: author.id,
+                       subject_type: "Decidim::UserBaseEntity",
+                       role: "proposal_author"
+                     })
       end
     end
 
     Decidim::Proposals::CollaborativeDraft.find_each do |draft|
       draft.authors.each do |author|
         records.push({
-          record_id: draft.id,
-          record_type: "Decidim::Proposals::CollaborativeDraft",
-          subject_id: author.id,
-          subject_type: "Decidim::UserBaseEntity",
-          role: "collaborative_draft_author"
-        })
+                       record_id: draft.id,
+                       record_type: "Decidim::Proposals::CollaborativeDraft",
+                       subject_id: author.id,
+                       subject_type: "Decidim::UserBaseEntity",
+                       role: "collaborative_draft_author"
+                     })
       end
     end
 
     if Decidim.module_installed?(:blogs)
       Decidim::Blogs::Post.find_each do |post|
         records.push({
-          record_id: post.id,
-          record_type: "Decidim::Blogs::Post",
-          subject_id: post.author.id,
-          subject_type: "Decidim::UserBaseEntity",
-          role: "blog_author"
-        })
+                       record_id: post.id,
+                       record_type: "Decidim::Blogs::Post",
+                       subject_id: post.author.id,
+                       subject_type: "Decidim::UserBaseEntity",
+                       role: "blog_author"
+                     })
       end
     end
 
     if Decidim.module_installed?(:meetings)
       Decidim::Meetings::Meeting.find_each do |meeting|
         records.push({
-          record_id: meeting.id,
-          record_type: "Decidim::Meetings::Meeting",
-          subject_id: meeting.author.id,
-          subject_type: "Decidim::UserBaseEntity",
-          role: "meeting_author"
-        })
+                       record_id: meeting.id,
+                       record_type: "Decidim::Meetings::Meeting",
+                       subject_id: meeting.author.id,
+                       subject_type: "Decidim::UserBaseEntity",
+                       role: "meeting_author"
+                     })
       end
 
       # TODO: Decidim::Meetings::Registration.where()
@@ -221,12 +219,12 @@ namespace :decidim_rbac do
     Decidim::Messaging::Conversation.find_each do |conversation|
       conversation.participants.map do |participant|
         records.push({
-          record_id: conversation.id,
-          record_type: "Decidim::Messaging::Conversation",
-          subject_id: participant.id,
-          subject_type: "Decidim::UserBaseEntity",
-          role: "conversation_participant"
-        })
+                       record_id: conversation.id,
+                       record_type: "Decidim::Messaging::Conversation",
+                       subject_id: participant.id,
+                       subject_type: "Decidim::UserBaseEntity",
+                       role: "conversation_participant"
+                     })
       end
     end
 
@@ -249,7 +247,7 @@ namespace :decidim_rbac do
         role: "comment_author"
       )
     end
-    
-    Decidim::RBAC::PermissionRoleAssignment.insert_all(records.uniq)
+
+    Decidim::RBAC::PermissionRoleAssignment.insert_all(records.uniq) # rubocop:disable Rails/SkipsModelValidations
   end
 end

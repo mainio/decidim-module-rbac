@@ -15,22 +15,22 @@ module Decidim
     autoload :PermissionLoader, "decidim/rbac/permission_loader"
     autoload :RoleAssignmentableResource, "decidim/rbac/role_assignmentable_resource"
 
-    PRIVILAGED_ROLES = [
-      "collaborator",
-      "moderator",
-      "user_manager",
-      "evaluator",
-      "private_participant",
-      "collaborative_draft_author",
-      "conversation_participant",
-      "notification_owner",
-      "process_groups_admin"
-    ].freeze
+    PRIVILAGED_ROLES = %w(
+      collaborator
+      moderator
+      user_manager
+      evaluator
+      private_participant
+      collaborative_draft_author
+      conversation_participant
+      notification_owner
+      process_groups_admin
+    ).freeze
 
     SUPPORTED_SPACE_CLASSES = [
       "Decidim::ParticipatoryProcess",
-      "Decidim::Assembly",
-  ].freeze
+      "Decidim::Assembly"
+    ].freeze
 
     class << self
       delegate :roles, to: :registry
@@ -62,7 +62,7 @@ module Decidim
       PRIVILAGED_ROLES
     end
 
-    def self.supported_space_classes 
+    def self.supported_space_classes
       SUPPORTED_SPACE_CLASSES
     end
   end

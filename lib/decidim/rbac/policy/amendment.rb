@@ -29,7 +29,7 @@ module Decidim
           when :reject, :accept
             @record = amendable
           end
-          
+
           super
         end
 

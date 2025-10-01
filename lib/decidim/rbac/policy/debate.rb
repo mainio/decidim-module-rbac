@@ -5,18 +5,13 @@ module Decidim
     module Policy
       class Debate < Default
         context_reader :current_settings, :component
-
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/CyclomaticComplexity
         def able?(operation)
           case operation
           when :create
             # TODO: authorization check
             record.current_settings&.creation_enabled?
-          when :edit
-            record.present?
-          when :like
-            record.present?
-          when :close
+          when :edit, :like, :close
             record.present?
           when :read, :report, :export, :admin_create, :admin_read, :admin_export
             true
@@ -28,14 +23,14 @@ module Decidim
             false
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def allowed?(operation)
           case operation
           when :read
             return true if super(:admin_read)
 
-            return true if !record.hidden?
+            return true unless record.hidden?
           end
 
           super

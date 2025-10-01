@@ -34,12 +34,12 @@ module Decidim
       end
 
       def expanded_records(record, fallback)
-        records = 
-        [
-          record,
-          (record.respond_to?(:component) ? record.component : nil),
-          (record.respond_to?(:participatory_space) ? record.participatory_space : nil)
-        ]
+        records =
+          [
+            record,
+            (record.respond_to?(:component) ? record.component : nil),
+            (record.respond_to?(:participatory_space) ? record.participatory_space : nil)
+          ]
         records.push(record.organization) if fallback && record.respond_to?(:organization)
 
         records.compact.uniq
@@ -54,12 +54,12 @@ module Decidim
 
       def unassign_role!(role, resource)
         assignment = permission_role_assignments.find_by(role: role, record: resource)
-          assignment.destroy! if assignment
+        assignment.destroy! if assignment
       end
 
-      def accessible_records(applicable_classes=nil)
-        return all_accessible_records unless applicable_classes.present?
-        
+      def accessible_records(applicable_classes = nil)
+        return all_accessible_records if applicable_classes.blank?
+
         Array(applicable_classes).flat_map do |klass|
           next unless class_name_supported?(klass)
 
@@ -67,23 +67,23 @@ module Decidim
           next [] unless table
 
           roles_scope = permission_role_assignments
-                          .where(record_type: klass)
-                          .joins("INNER JOIN #{table} ON #{table}.id = decidim_rbac_permission_role_assignments.record_id")
-                          .where("#{table}.decidim_organization_id = ?", current_organization.id)
-                          .where(
-                            "decidim_rbac_permission_role_assignments.role IN (?) OR decidim_rbac_permission_role_assignments.role LIKE ?",
-                            privileged_roles, "%_admin"
-                          )
+                        .where(record_type: klass)
+                        .joins("INNER JOIN #{table} ON #{table}.id = decidim_rbac_permission_role_assignments.record_id")
+                        .where("#{table}.decidim_organization_id = ?", current_organization.id)
+                        .where(
+                          "decidim_rbac_permission_role_assignments.role IN (?) OR decidim_rbac_permission_role_assignments.role LIKE ?",
+                          privileged_roles, "%_admin"
+                        )
 
           roles_scope.map(&:record)
         end.uniq
       end
 
-      def is_organization_admin?
+      def organization_admin?
         permission_role_assignments.exists?(role: "organization_admin", record: organization)
       end
 
-      def is_process_groups_admin?
+      def process_groups_admin?
         permission_role_assignments.exists?(role: "process_groups_admin", record: organization)
       end
 
@@ -105,7 +105,7 @@ module Decidim
         supported_space_classes.include?(class_name)
       end
 
-      def current_organization 
+      def current_organization
         @current_organization ||= organization
       end
 

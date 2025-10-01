@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # frozen_string_literal:
 
 module Decidim
@@ -5,13 +7,15 @@ module Decidim
     module DestroyParticipatorySpacePrivateUserOverrides
       extend ActiveSupport::Concern
 
-      
       included do
         def run_after_hooks
           return unless resource
 
-          resource_base = resource.respond_to?(:privatable_to) ? 
-            resource.privatable_to : resource
+          resource_base = if resource.respond_to?(:privatable_to)
+                            resource.privatable_to
+                          else
+                            resource
+                          end
           return unless resource_base
 
           user = resource.user

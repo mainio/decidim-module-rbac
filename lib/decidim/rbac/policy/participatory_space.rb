@@ -13,7 +13,7 @@ module Decidim
           case operation
           when :read
             return true if user_can_preview_space?
-            
+
             record.present?
           when :list, :admin_read, :admin_list, :admin_create, :admin_import
             true
@@ -62,9 +62,9 @@ module Decidim
         end
 
         def participatory_space
-          @participatory_space ||= current_participatory_space 
+          @participatory_space ||= current_participatory_space
           @participatory_space ||= trashable_deleted_resource if trashable_deleted_resource.is_a?(Decidim::ParticipatoryProcess) ||
-          @participatory_space ||= super
+                                                                 @participatory_space ||= super
         end
       end
     end

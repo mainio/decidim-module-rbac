@@ -11,7 +11,7 @@ module Decidim
           when :admin_hide, :admin_unhide, :admin_unreport, :admin_read
             @record = participatory_space
           else
-             @record ||= participatory_space || subject&.organization
+            @record ||= participatory_space || subject&.organization
           end
 
           super
@@ -20,10 +20,10 @@ module Decidim
         private
 
         def participatory_space
-          @participatory_space ||= current_participatory_space || 
-            assembly ||
-            process ||
-            super
+          @participatory_space ||= current_participatory_space ||
+                                   assembly ||
+                                   process ||
+                                   super
         end
       end
     end

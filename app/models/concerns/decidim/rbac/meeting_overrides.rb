@@ -6,7 +6,7 @@ module Decidim
       extend ActiveSupport::Concern
 
       included do
-        scope :visible_for, ->(user) do
+        scope :visible_for, lambda { |user|
           process_meetings = joins(:component)
                              .joins("INNER JOIN decidim_participatory_processes AS p
                                      ON p.id = decidim_components.participatory_space_id")
@@ -25,7 +25,7 @@ module Decidim
 
           public_meetings = where(id: process_meetings).or(where(id: assembly_meetings))
 
-          return public_meetings.distinct unless user.present?
+          return public_meetings.distinct if user.blank?
 
           process_special = joins(:component)
                             .joins("INNER JOIN decidim_participatory_processes AS p
@@ -52,7 +52,7 @@ module Decidim
           special_meetings = where(id: process_special).or(where(id: assembly_special))
 
           where(id: public_meetings).or(where(id: special_meetings)).distinct
-        end
+        }
       end
     end
   end

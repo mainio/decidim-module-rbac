@@ -9,7 +9,7 @@ module Decidim
         # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def able?(operation)
           case operation
-          when :read
+          when :read, :admin_create
             true
           when :join
             # TODO: Authorization check
@@ -32,24 +32,16 @@ module Decidim
             !meeting.withdrawn? && !meeting.past?
           when :close
             meeting.past?
-          when :admin_close
+          when :admin_close, :admin_read_invites, :admin_update
             meeting.present?
           when :register
             meeting&.registrations_enabled? && !meeting&.private_meeting?
             # TODO: Authorization check
           when :admin_invite_attendee
             meeting&.registrations_enabled? && !meeting.closed?
-          when :admin_read_invites
-            meeting&.present?
-          when :admin_create
-            true
-          when :admin_update
-            meeting&.present?
           when :reply_poll
             # TODO: Authorization check
             meeting.present? && meeting.poll.present?
-          when :join_waitlist
-            meeting && meeting.waitlist_enabled? && !meeting.has_available_slots?
           when :admin_validate_registration_code
             meeting.present? &&
               meeting.registrations_enabled? &&
@@ -65,7 +57,7 @@ module Decidim
           case operation
           when :admin_create
             return super
-          when :admin_update, :admin_close, :admin_copy, :admin_export_registrations, 
+          when :admin_update, :admin_close, :admin_copy, :admin_export_registrations,
             :admin_read_invites, :admin_invite_attendee, :admin_validate_registration_code
             return false unless meeting.official?
 

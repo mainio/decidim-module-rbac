@@ -754,7 +754,7 @@ Decidim::RBAC.define do |reg|
       res.operation :admin_restore
     end
 
-     group.resource :attachment_collection do |res|
+    group.resource :attachment_collection do |res|
       res.operation :admin_read
       res.operation :admin_create
       res.operation :admin_update
@@ -859,7 +859,6 @@ Decidim::RBAC.define do |reg|
       res.operation :withdraw
     end
   end
-
 
   # decidim-sortitions
   reg.group :sortitions_admin do |group|
@@ -1033,7 +1032,7 @@ Decidim::RBAC.define do |reg|
     role.resource :proposal do |res|
       res.operation :admin_read
     end
-    
+
     role.resource :process_list do |res|
       res.operation :admin_read
     end

@@ -23,7 +23,7 @@ module Decidim
         end
 
         def allowed?(operation)
-          case operation 
+          case operation
           when :admin_show_email
             @record = user
           end

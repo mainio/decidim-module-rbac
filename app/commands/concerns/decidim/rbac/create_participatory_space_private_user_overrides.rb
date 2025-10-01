@@ -21,7 +21,7 @@ module Decidim
       end
 
       def assign_private_role!
-        user.assign_role!("private_participant" ,private_user_to)
+        user.assign_role!("private_participant", private_user_to)
       end
     end
   end

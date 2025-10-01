@@ -5,7 +5,7 @@ module Decidim
     module Policy
       class GlobalModeration < Default
         def allowed?(operation)
-          return unless subject.present?
+          return false if subject.blank?
 
           @record ||= subject.accessible_records
 

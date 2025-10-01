@@ -4,17 +4,17 @@ module Decidim
   module RBAC
     module Policy
       class Process < ParticipatorySpace
-         context_reader :process
+        context_reader :process
 
-         def able?(operation)
+        def able?(_operation)
           self.record ||= process
-         end
+        end
 
         private
 
         def participatory_space
-        @participatory_space ||= 
-          process || super
+          @participatory_space ||=
+            process || super
         end
       end
     end

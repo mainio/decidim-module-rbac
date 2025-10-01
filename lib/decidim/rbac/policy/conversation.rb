@@ -7,7 +7,7 @@ module Decidim
         context_reader :conversation
 
         def able?(operation)
-          return false unless subject.present?
+          return false if subject.blank?
 
           case operation
           when :list, :create
@@ -24,7 +24,7 @@ module Decidim
           when :create
             @record = subject.organization
           end
-          
+
           super
         end
       end

@@ -1,18 +1,18 @@
-# frozen_string_literal: true 
+# frozen_string_literal: true
 
-module Decidim 
-  module RBAC 
+module Decidim
+  module RBAC
     module AssembliesWithUserRoleOverrides
       extend ActiveSupport::Concern
 
       included do
-
         def query
-          return Assemblies::OrganizationAssemblies.new(user.organization).query if user.is_organization_admin?
+          return Assemblies::OrganizationAssemblies.new(user.organization).query if user.organization_admin?
+
           Assembly.where(id: assembly_ids)
         end
 
-        private 
+        private
 
         def assembly_ids
           user.accessible_records("Decidim::Assembly").map(&:id)

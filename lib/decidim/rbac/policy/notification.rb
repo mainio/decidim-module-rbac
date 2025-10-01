@@ -5,7 +5,7 @@ module Decidim
     module Policy
       class Notification < Default
         context_reader :notification
-        
+
         def able?(operation)
           case operation
           when :read
@@ -18,7 +18,7 @@ module Decidim
         end
 
         def allowed?(operation)
-          case :notification
+          case operation
           when :destroy
             @record ||= notificaiton
           end
