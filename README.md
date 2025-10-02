@@ -9,6 +9,12 @@ A [Decidim](https://github.com/decidim/decidim) module that allows managing
 access to different resources within the system through Role Based Access
 Control (RBAC).
 
+RBAC is a method of managing system access by assigning users to predefined roles that carry specific sets of permissions. Instead of granting or revoking permissions individually—which quickly becomes unmanageable as systems grow—roles provide a structured, scalable way to ensure users have only the access they need. This improves security by reducing the risk of unauthorized actions, enhances efficiency by simplifying user management, and supports compliance by making it easier to audit who has access to what. Role-based permission follows the principle of “least privilege” rule, meaning users are granted only the minimum permissions necessary for their tasks.
+
+After installing this module, your decidim app [ideally] should work as before, with all of the permission logic being replace by RBAC controls. This would introduce more flexible, easily managed permission work-flow for different roles.
+
+## Notes
+
 This module changes how Decidim permissions work internally, so it should be
 used with caution on existing instances. It is recommended to test the
 functionality thoroughly once this module is introduced. Currently this is a
@@ -34,8 +40,18 @@ gem "decidim-rbac"
 And then execute:
 
 ```bash
-$ bundle
+bundle
+bundle exec rails decidim_rbac:install:migrations
+bundle exec rails db:migrate
 ```
+
+Finally, run the following rake task to migrate all of the roles in your app:
+
+```bash
+bundle exec rake decidim_rbac:assign_roles
+```
+
+The above step migrates all of the permissions in the decidim, and saves those into `permision_role_assignment` table. This includes defining authors, admins, participant roles. This step is crucial, otherwise the existing users wont have any permission over the instance.
 
 ## Contributing
 
