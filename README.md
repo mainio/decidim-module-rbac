@@ -34,7 +34,14 @@ gem "decidim-rbac"
 And then execute:
 
 ```bash
-$ bundle
+bundle
+bundle exec rails decidim_rbac:install:migrations
+bundle exec rails db:migrate
+```
+Finally, run the following rake task to migrate all of the roles in your app:
+
+```bash
+bundle exec rake decidim_rbac:assign_roles
 ```
 
 ## Contributing
